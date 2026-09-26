@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROH • Supermarket Simulator V62 Background Fullscreen Gestures</title><!-- ROH_INDEX_BUILD:roh-market-v62-background-fullscreen-gestures-20260926 -->
+<html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ROH • Supermarket Simulator V65 Action Audio Red Flares</title><!-- ROH_INDEX_BUILD:roh-market-v65-action-audio-red-flares-20260926 -->
 <style>
 :root{--ink:#172f2c;--muted:#7c918a;--green:#165c4b;--mint:#c8ebaa;--orange:#edab58;--paper:#f3f3eb;--line:#dfe4da;--red:#b14d40}*{box-sizing:border-box}body{margin:0;overflow:hidden;font-family:Inter,Segoe UI,Arial,sans-serif;background:#a2b4b9;color:var(--ink)}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.45}button:focus-visible,input:focus-visible{outline:3px solid var(--orange);outline-offset:3px}button{transition:background .14s,transform .14s}button:active{transform:translateY(1px)}canvas#world{position:fixed;inset:0;width:100%;height:100%;display:block}button.primary{background:var(--green);color:white;border:0;border-radius:7px;padding:13px 22px;font-weight:650}button.primary:hover{background:#22705b}.secondary{background:#fff;border:1px solid var(--line);border-radius:7px;padding:11px 17px;color:var(--ink);font-weight:600}.secondary:hover{background:#e8eee3}.danger{background:#fae2db;color:var(--red);border:0;padding:12px 20px;border-radius:7px}small,.muted{color:var(--muted)}.eyebrow{font-size:11px;letter-spacing:2.1px;font-weight:750;text-transform:uppercase}h1,h2,h3,p{margin-top:0}.row{display:flex;align-items:center;gap:12px}.between{justify-content:space-between}.hide{display:none!important}.tag{display:inline-flex;align-items:center;gap:7px;background:#e6eddf;padding:6px 9px;border-radius:5px;font-size:11px;font-weight:750}.tag.amber{background:#fff0d4;color:#93622b}.tag.red{background:#fce2d8;color:var(--red)}.dot{width:7px;height:7px;border-radius:50%;display:inline-block;background:currentColor}.btnrow{display:flex;gap:9px;flex-wrap:wrap}.fine{font-size:12px;line-height:1.6}.num{font-variant-numeric:tabular-nums}kbd{display:inline-flex;align-items:center;justify-content:center;min-width:23px;height:23px;padding:0 6px;border-radius:4px;border:1px solid #ffffff45;background:#ffffff18;color:inherit;font:600 11px Segoe UI,Arial}input[type=number],input[type=text],select{border:1px solid #d7dfd3;background:white;border-radius:6px;padding:9px;color:var(--ink)}input[type=range]{accent-color:var(--green)}
 #loading{position:fixed;inset:0;background:#173c32 center/cover no-repeat;z-index:100;color:#e2ebd7;display:grid;place-items:center;text-align:center;transition:background-image .35s ease}#loading:before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,#09251ed9,#0e3328c2 55%,#0b201bb3);backdrop-filter:blur(2px)}#loading>div{position:relative;z-index:1;width:min(430px,86vw);padding:28px 30px;border:1px solid #ffffff24;border-radius:16px;background:#112f27a8;backdrop-filter:blur(9px);box-shadow:0 24px 80px #0007}#loading strong{display:block;font-size:48px;letter-spacing:-2px;margin-bottom:12px}#loading .bar{height:7px;background:#49655699;width:100%;margin:24px auto 12px;overflow:hidden;border-radius:99px;border:1px solid #ffffff16}#loading .bar i{display:block;background:linear-gradient(90deg,#9edc8b,#d4f2b5);width:4%;height:100%;border-radius:99px;transition:width .22s ease}#loading .secure{margin-top:17px;font-size:10px;letter-spacing:1.7px;color:#b8d9b8;text-transform:uppercase}
@@ -1240,7 +1240,7 @@ function buildPlayerAvatar(){if(!scene)return;if(playerAvatar){scene.remove(play
  const rotor=new THREE.Group();rotor.position.y=.18;helmet.add(rotor);cyl(rotor,.055,.055,.16,'#8e9691',0,0,0);
  cube(rotor,2.0,.035,.15,'#abbab6',0,.06,0);cube(rotor,.15,.035,2.0,'#abbab6',0,.06,0);helmet.userData.rotor=rotor;helmet.visible=TC.heli;p.g.userData.helmet=helmet;
  p.g.visible=thirdPerson;scene.add(p.g);playerAvatar=p;}
-function updatePlayerAvatar(dt,moving){if(!playerAvatar)return;const p=playerAvatar,crouching=!TC.fly&&!playerProne&&!!keys.KeyC;p.g.visible=active&&thirdPerson;p.g.position.set(player.x,playerMotion.jumpY||0,player.z);p.g.rotation.y=player.yaw+Math.PI;p.g.rotation.x=0;p.g.scale.set(1,1,1);if(thirdPerson)animateHuman(p,dt,moving);p.g.position.y=(playerMotion.jumpY||0)+(playerProne?.36:0);p.g.scale.y=crouching?.72:1;p.g.rotation.x=playerProne?1.32:0;}
+function updatePlayerAvatar(dt,moving){if(!playerAvatar)return;const p=playerAvatar,crouching=!TC.fly&&!playerProne&&!!V63_STATE.crouch;p.g.visible=active&&thirdPerson;p.g.position.set(player.x,playerMotion.jumpY||0,player.z);p.g.rotation.y=player.yaw+Math.PI;p.g.rotation.x=0;p.g.scale.set(1,1,1);if(thirdPerson)animateHuman(p,dt,moving);p.g.position.y=(playerMotion.jumpY||0)+(playerProne?.36:0);p.g.scale.y=crouching?.72:1;p.g.rotation.x=playerProne?1.32:0;}
 Game.toggleView=function(){thirdPerson=!thirdPerson;if(playerAvatar)playerAvatar.g.visible=thirdPerson;};
 let van=null;
 const TRAFFIC_STATE={timer:0,target:8};
@@ -1667,7 +1667,7 @@ function updatePlayer(dt){
  if(modal)return;
  const right=(keys.KeyD?1:0)-(keys.KeyA?1:0),forward=(keys.KeyW?1:0)-(keys.KeyS?1:0);
  const inputLength=Math.hypot(right,forward);
- const crouching=!TC.fly&&!playerProne&&!!keys.KeyC;const baseSpeed=playerProne?.82:crouching?1.48:(keys.ShiftLeft||keys.ShiftRight?4.45:2.55);
+ const crouching=!TC.fly&&!playerProne&&!!V63_STATE.crouch;const baseSpeed=playerProne?.82:crouching?1.48:(keys.ShiftLeft||keys.ShiftRight?4.45:2.55);
  const speed=baseSpeed*(held?.86:1)*TC.speed*skillFactor('pace',1.12);
  const wishX=inputLength?(Math.cos(player.yaw)*right-Math.sin(player.yaw)*forward)/inputLength*speed:0;
  const wishZ=inputLength?(-Math.sin(player.yaw)*right-Math.cos(player.yaw)*forward)/inputLength*speed:0;
@@ -1806,7 +1806,7 @@ function contactShadow(parent,w,d,x,z,opacity=.2){if(!shadowTexture)shadowTextur
 function shopDetails(xmax){ /* Interiérové dekorace nyní spravuje buildStoreProps. */ }
 // Local index updates: browser security requires user to grant a file handle for file://.
 // A full replacement of JavaScript requires same-tab reload; we preserve progress and resume.
-const INDEX_BUILD='roh-market-v62-background-fullscreen-gestures-20260926';
+const INDEX_BUILD='roh-market-v65-action-audio-red-flares-20260926';
 function indexDB(){return new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error('IndexedDB nenalezeno'));return;}const r=indexedDB.open('roh_market_index_watcher',1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('handles'))r.result.createObjectStore('handles');};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
 async function rememberIndexHandle(h){try{const db=await indexDB();const tx=db.transaction('handles','readwrite');tx.objectStore('handles').put(h,'current');tx.oncomplete=()=>db.close();tx.onerror=()=>db.close();}catch(e){/* private browsing and file:// may deny persistence */}}
 async function restoreIndexHandle(){if(location.protocol!=='file:'||watchHandle)return;try{
@@ -1992,7 +1992,7 @@ const MP=window.MP={
   async persist(force=false){if(!this.connected||!this.isHost()||(!force&&!this.persistDirty)||!this.persistenceAvailable||!this.client)return false;const state=this.captureWorld();if(state.dev)state.dev.weather=captureSharedWeather();const room=this.persistRoom(),shop=String(S.shopName||this.room).slice(0,24),lvl=level(),players=Math.max(1,this.onlineCount());try{let q=await this.client.rpc('save_game_room_v30',{p_room:room,p_state:state,p_rev:this.worldRev,p_host_id:this.id,p_shop_name:shop,p_day:Math.max(1,Math.round(S.day||1)),p_level:lvl,p_player_count:players,p_build:34});if(q?.error&&/function|schema cache|PGRST202/i.test(q.error.message||''))q=await this.client.from('game_rooms').upsert({room,state,rev:this.worldRev,updated_at:new Date().toISOString()},{onConflict:'room'});if(q?.error)throw q.error;this.persistDirty=false;this.persistFailures=0;return true;}catch(e){this.persistFailures++;this.persistDirty=true;const fatal=String(e?.code||'').startsWith('42')||/relation .* does not exist|permission denied/i.test(e?.message||'');if(fatal)this.persistenceAvailable=false;console.info('[MP] persistence retry '+this.persistFailures+':',e?.message||e);return false;}},
   async heartbeat(force=false){if(!this.connected||!this.isHost()||!this.client)return;const now=Date.now();if(!force&&now-this.lastHeartbeatAt<7000)return;this.lastHeartbeatAt=now;try{const q=await this.client.rpc('touch_game_room_v30',{p_room:this.persistRoom(),p_host_id:this.id,p_player_count:Math.max(1,this.onlineCount()),p_shop_name:String(S.shopName||this.room).slice(0,24),p_day:Math.max(1,Math.round(S.day||1)),p_level:level(),p_build:34});if(q?.error&&/function|schema cache|PGRST202/i.test(q.error.message||'')){this.persistDirty=true;await this.persist(true);}else if(q?.error)throw q.error;}catch(e){console.info('[MP] heartbeat delayed:',e?.message||e);}},
   hashSeed(id){let h=2166136261;for(let i=0;i<id.length;i++){h^=id.charCodeAt(i);h=Math.imul(h,16777619);}return Math.abs(h)%500;},
-  playerPayload(){const stance=playerProne?'prone':(!TC.fly&&keys.KeyC?'crouch':'stand');return{from:this.id,nick:PROFILE_NICK||'Hráč',x:player.x,z:player.z,y:(TC.flyY||0)+(playerMotion.jumpY||0),yaw:player.yaw,pitch:player.pitch,stance,moving:Math.hypot(playerMotion.vx,playerMotion.vz)>.07,held:held?{id:held.id,product:held.product,count:held.count}:null,tool:heldTool||null,dance:!!TC.dance,spin:!!TC.spin,heli:!!TC.heli,t:performance.now()};},
+  playerPayload(){const stance=playerProne?'prone':(!TC.fly&&V63_STATE.crouch?'crouch':'stand');return{from:this.id,nick:PROFILE_NICK||'Hráč',x:player.x,z:player.z,y:(TC.flyY||0)+(playerMotion.jumpY||0),yaw:player.yaw,pitch:player.pitch,stance,moving:Math.hypot(playerMotion.vx,playerMotion.vz)>.07,held:held?{id:held.id,product:held.product,count:held.count}:null,tool:heldTool||null,dance:!!TC.dance,spin:!!TC.spin,heli:!!TC.heli,t:performance.now()};},
   onPlayer(p){if(!p||p.from===this.id||!this.peers.get(p.from)?.accepted)return;let r=this.remotePlayers.get(p.from);if(r&&Number.isFinite(Number(p.t))&&Number(p.t)<=Number(r.lastRemoteT||-1))return;if(!r&&scene){const avatar=human(this.hashSeed(p.from));const holder=new THREE.Group();holder.add(avatar.g);scene.add(holder);const tex=textTexture(p.nick||'Hráč','#153c31','#f0f5e8',512,128);const name=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false,depthWrite:false,transparent:true,fog:false}));name.scale.set(Math.min(2.2,Math.max(.9,String(p.nick||'Hráč').length*.14)),.34,1);name.position.set(0,2.18,0);name.userData.ownerLabel=true;name.renderOrder=9999;name.frustumCulled=false;avatar.g.add(name);r={...avatar,holder,target:{x:p.x,z:p.z,y:p.y||0,yaw:p.yaw},lastX:p.x,lastZ:p.z,moving:false,carrySig:'',carryVisual:null,nick:p.nick||'Hráč',nameSprite:name,nameBase:Math.min(2.2,Math.max(.9,String(p.nick||'Hráč').length*.14))};holder.position.set(p.x,p.y||0,p.z);this.remotePlayers.set(p.from,r);}if(!r)return;r.lastRemoteT=Number(p.t)||performance.now();if(String(p.nick||'Hráč')!==r.nick&&r.nameSprite){r.nick=String(p.nick||'Hráč').slice(0,18);r.nameSprite.material.map?.dispose();r.nameSprite.material.map=textTexture(r.nick,'#153c31','#f0f5e8',512,128);r.nameSprite.material.needsUpdate=true;r.nameBase=Math.min(2.2,Math.max(.9,r.nick.length*.14));}let tx=clamp(Number(p.x)||0,-55,55),tz=clamp(Number(p.z)||0,-10,75),ty=clamp(Number(p.y)||0,0,45);const now=performance.now(),dev=String(r.nick||'').trim().toLowerCase()===DEV_NICK,knockGrace=now<(r.knockGraceUntil||0);if(!dev&&!knockGrace&&r.lastPacketAt){const elapsed=clamp((now-r.lastPacketAt)/1000,.03,.8),dx=tx-r.target.x,dz=tz-r.target.z,dist=Math.hypot(dx,dz),max=9*elapsed+.65;if(dist>max){tx=r.target.x+dx/dist*max;tz=r.target.z+dz/dist*max;}ty=clamp(ty,0,1.35);}const stance=['stand','crouch','prone'].includes(p.stance)?p.stance:'stand';r.lastPacketAt=now;r.target={x:tx,z:tz,y:ty,yaw:Number(p.yaw)||0,stance};r.stance=stance;r.moving=!!p.moving;r.dance=dev&&!!p.dance;r.spin=dev&&!!p.spin;r.heli=dev&&!!p.heli;this.syncRemoteCarry(r,p);},
   syncRemoteCarry(r,p){const sig=p.held?`b:${p.held.id}:${p.held.count}`:p.tool?`t:${p.tool}`:'';if(sig===r.carrySig)return;r.carrySig=sig;r.carry=!!p.held;if(r.carryVisual){r.g.remove(r.carryVisual);r.carryVisual=null;}if(p.held&&P[p.held.product]){const g=crateModel(p.held);g.position.set(0,1.02,.31);g.scale.setScalar(.78);r.g.add(g);r.carryVisual=g;}else if(p.tool){const g=toolModel(p.tool,r.g);g.position.set(.24,.94,.20);g.rotation.set(p.tool==='broom'?.25:-.15,0,p.tool==='broom'?.30:-.18);g.scale.setScalar(.72);r.carryVisual=g;}this.refreshLocks();},
   clearRemotePlayers(){if(scene)for(const r of this.remotePlayers.values())scene.remove(r.holder);this.remotePlayers.clear();if(scene){buildBoxes();rebuildTools();}},
@@ -2044,9 +2044,9 @@ const MP=window.MP={
     this.playerTimer+=dt;if(this.playerTimer>=1/15){this.playerTimer=0;this.send('player',this.playerPayload());}
     if(this.isHost()){
       this.worldTimer+=dt;this.runtimeTimer+=dt;this.persistTimer+=dt;this.heartbeatTimer+=dt;
-      if(this.worldTimer>=.22){this.worldTimer=0;this.broadcastWorld(false);}
-      if(this.runtimeTimer>=.11){this.runtimeTimer=0;this.sendRuntime();}
-      if(this.persistTimer>=5){this.persistTimer=0;this.persist();}if(this.heartbeatTimer>=8){this.heartbeatTimer=0;this.heartbeat();}
+      if(this.worldTimer>=.75){this.worldTimer=0;this.broadcastWorld(false);}
+      if(this.runtimeTimer>=.16){this.runtimeTimer=0;this.sendRuntime();}
+      if(this.persistTimer>=8){this.persistTimer=0;this.persist();}if(this.heartbeatTimer>=8){this.heartbeatTimer=0;this.heartbeat();}
     }
   },
   installMutations(){
@@ -5167,6 +5167,757 @@ MP.updateRemotePlayers=function(dt){const r=_v62RemotePlayers(dt);const now=perf
 
 // Hint keys includes the new visible multiplayer gesture.
 setTimeout(()=>{const h=$('hintKeys');if(h&&!h.dataset.v62){h.dataset.v62='1';h.insertAdjacentHTML('beforeend',' <kbd>U</kbd> gesto <kbd>F10</kbd> fullscreen');}},350);
+
+
+// ===== V63 — storage rack pickup, toggle crouch/prone physics, fixed growth UI, smoother sync, half outdoor civilians =====
+const V63_STATE={crouch:false};
+
+// C is a true toggle. The old key state may go false on keyup, but V63_STATE stays latched.
+window.addEventListener('keydown',e=>{
+  if(e.code!=='KeyC'||e.repeat||!active||modal||buildMode||TC.fly||v35ArrestActive?.())return;
+  if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;
+  V63_STATE.crouch=!V63_STATE.crouch;
+  if(V63_STATE.crouch&&playerProne)playerProne=false;
+  keys.KeyC=V63_STATE.crouch;
+  playerMotion.camReady=false;
+  toast(V63_STATE.crouch?'Dřep · C znovu = vstát.':'Stojíš.');
+},true);
+
+// Y was already a toggle logically; enforce it as a physical avatar state and never as a camera stance.
+window.addEventListener('keydown',e=>{
+  if(e.code!=='KeyY'||e.repeat||!active||modal||buildMode||TC.fly||v35ArrestActive?.())return;
+  V63_STATE.crouch=false;
+  keys.KeyC=false;
+},true);
+
+// Keep the first/third-person camera independent of jump and prone height.
+// The avatar itself still receives jumpY and the physical prone rotation.
+const _v63UpdatePlayer=updatePlayer;
+updatePlayer=function(dt){
+  if(v35ArrestActive?.())V63_STATE.crouch=false;
+  keys.KeyC=TC.fly?!!keys.KeyC:!!V63_STATE.crouch;
+  const r=_v63UpdatePlayer.apply(this,arguments);
+  if(!TC.fly&&active&&!modal){
+    const crouch=!playerProne&&V63_STATE.crouch;
+    const targetY=(crouch?1.16:1.68)+(thirdPerson?.80:0)+(playerMotion.bob||0);
+    camera.position.y=targetY;
+  }
+  return r;
+};
+
+// Make the local avatar itself visibly jump/lie/crouch.
+// Camera height above intentionally ignores playerProne and jumpY.
+const _v63UpdateAvatar=updatePlayerAvatar;
+updatePlayerAvatar=function(dt,moving){
+  const r=_v63UpdateAvatar.apply(this,arguments);
+  const p=playerAvatar;
+  if(!p?.g)return r;
+  if(playerProne){
+    p.g.scale.set(1,1,1);
+    p.g.rotation.x=1.50;
+    p.g.position.y=.42;
+    p.arms?.forEach((a,i)=>{
+      a.rotation.x=-.34+(i?-.07:.07);
+      a.rotation.z=(i?1:-1)*.14;
+      if(a.userData?.elbow)a.userData.elbow.rotation.x=-.72;
+    });
+    p.legs?.forEach((l,i)=>{
+      l.rotation.x=.10+(i?.03:-.03);
+      l.rotation.z=(i?1:-1)*.025;
+      if(l.userData?.knee)l.userData.knee.rotation.x=.18;
+    });
+  }else{
+    // jump is physical only on the avatar
+    p.g.position.y=playerMotion.jumpY||0;
+    p.g.rotation.x=0;
+    p.g.scale.y=V63_STATE.crouch?.72:1;
+  }
+  return r;
+};
+
+// Remote players receive the same physical prone/jump result.
+const _v63RemotePlayers=MP.updateRemotePlayers.bind(MP);
+MP.updateRemotePlayers=function(dt){
+  const r=_v63RemotePlayers(dt);
+  for(const rp of this.remotePlayers.values()){
+    if(!rp?.g)continue;
+    const stance=rp.stance||rp.target?.stance||'stand';
+    if(stance==='prone'){
+      rp.g.rotation.x=1.50;
+      rp.g.position.y=.42;
+      rp.g.scale.set(1,1,1);
+    }else{
+      rp.g.rotation.x=0;
+      rp.g.scale.y=stance==='crouch'?.72:1;
+    }
+  }
+  return r;
+};
+
+// ---------- Storage rack: E can both PUT and TAKE a whole physical box ----------
+function v63StoredBoxes(rackId){
+  return S.boxes
+    .filter(b=>b?.rackId===rackId&&!window.MP?.isBoxLocked?.(b.id))
+    .sort((a,b)=>(Number(a.rackSlot)||0)-(Number(b.rackSlot)||0));
+}
+function v63TakeWholeBoxFromRack(rackId){
+  if(held)return false;
+  const rack=v58StorageProp(rackId);if(!rack)return false;
+  const list=v63StoredBoxes(rackId);
+  if(!list.length){toast('Skladový regál je prázdný.');return false;}
+  // Prefer the physically closest crate to the player.
+  let box=list[0],best=Infinity;
+  for(const b of list){
+    const q=v58RackPose(rack,b.rackSlot);if(!q)continue;
+    const d=(q.x-player.x)**2+(q.z-player.z)**2+(q.y-1.0)**2;
+    if(d<best){best=d;box=b;}
+  }
+  delete box.rackId;delete box.rackSlot;delete box.placed;
+  return pickBox(box.id);
+}
+const _v63Interact=interact;
+interact=function(){
+  if(!modal&&target?.type==='prop'){
+    const prop=S.props.find(x=>x.id===target.id);
+    if(prop?.type==='storage'){
+      lastInteract=clock;
+      if(held)return v58StoreWholeBox(prop.id);
+      const stored=v63StoredBoxes(prop.id);
+      if(stored.length)return v63TakeWholeBoxFromRack(prop.id);
+    }
+  }
+  return _v63Interact.apply(this,arguments);
+};
+const _v63UpdateTarget=updateTarget;
+updateTarget=function(){
+  _v63UpdateTarget.apply(this,arguments);
+  if(target?.type!=='prop')return;
+  const prop=S.props.find(x=>x.id===target.id);
+  if(prop?.type!=='storage')return;
+  const stored=v63StoredBoxes(prop.id);
+  $('crosshair').classList.add('active');
+  $('prompt').classList.remove('hide');
+  $('prompt').innerHTML=held
+    ? `<b>Skladový regál · ${stored.length}/${V58_STORAGE.slotsPerRack} beden</b><span><kbd>E</kbd> položit CELOU bednu do regálu · <kbd>Q</kbd> položit na zem</span>`
+    : `<b>Skladový regál · ${stored.length}/${V58_STORAGE.slotsPerRack} beden</b><span>${stored.length?'<kbd>E</kbd> vzít celou bednu z regálu':'Regál je prázdný'}</span>`;
+};
+
+// ---------- Growth page rebuilt with valid balanced markup ----------
+growthHTML=function(){
+  const max=S.expansion>=MAX_EXPANSION;
+  const stages=EXPANSION_COSTS.map((cost,i)=>`
+    <div class="card" style="padding:10px 5px;text-align:center;min-width:0">
+      <small>ETAPA ${i+1}</small>
+      <div style="font-weight:800;margin:6px 0">${i<S.expansion?'✓':money(cost)}</div>
+      <small>${i<S.expansion?'Koupeno':'Čeká'}</small>
+    </div>`).join('');
+  return `
+    <h3>Z rohu do celého města.</h3>
+    <p class="lead">Získávej zkušenosti prodejem. Licence rozšiřují sortiment, přístavba vytvoří další prodejní prostor.</p>
+    <div class="banner">
+      <div><div class="eyebrow">TVŮJ OBCHOD ROSTE</div><h3>Úroveň ${level()}</h3><p>${xpProgressText()} · ${skillPoints()} volných skill bodů</p></div>
+      <strong>${level().toString().padStart(2,'0')}</strong>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <span class="tag">LICENCE 2</span><h4 style="margin-top:16px">Malé radosti</h4>
+        <p>Káva, čokoláda, sýr a cola.<br>Vyžaduje úroveň 2.</p><b>${money(BALANCE.license[2])}</b>
+        <div class="section"><button class="primary" ${S.licenses.includes(2)||level()<2?'disabled':''} onclick="Game.license(2)">${S.licenses.includes(2)?'Odemčeno':'Koupit licenci'}</button></div>
+      </div>
+      <div class="card">
+        <span class="tag">LICENCE 3</span><h4 style="margin-top:16px">Ještě větší výběr</h4>
+        <p>Prací gel a olivový olej.<br>Vyžaduje úroveň 3.</p><b>${money(BALANCE.license[3])}</b>
+        <div class="section"><button class="primary" ${S.licenses.includes(3)||level()<3?'disabled':''} onclick="Game.license(3)">${S.licenses.includes(3)?'Odemčeno':'Koupit licenci'}</button></div>
+      </div>
+      <div class="card">
+        <span class="tag amber">ROZŠÍŘENÍ ${S.expansion} / ${MAX_EXPANSION}</span>
+        <h4 style="margin-top:16px">${max?'Maximální prodejna':'Rozšíření č. '+(S.expansion+1)}</h4>
+        <p>Posunutí obvodových stěn. Větší prodejna i místo pro vlastní sklad.</p>
+        <b>${max?'HOTOVO':money(EXPANSION_COSTS[S.expansion])}</b>
+        <div class="section"><button class="primary" ${max?'disabled':''} onclick="Game.expand()">${max?'Všechna rozšíření zakoupena':'Koupit další rozšíření'}</button></div>
+      </div>
+    </div>
+    <div class="section">
+      <h4>Etapy přístavby</h4>
+      <div class="cards" style="grid-template-columns:repeat(5,minmax(0,1fr));gap:7px">${stages}</div>
+    </div>
+    <div class="note">Nový sortiment objednej a doplň do volné police. U prázdné řady lze klávesou F vybrat druh zboží pro doplňovače.</div>`;
+};
+
+// ---------- About half as many outside civilian NPCs ----------
+const _v63BuildCityWalkers=buildCityWalkers;
+buildCityWalkers=function(){
+  const r=_v63BuildCityWalkers.apply(this,arguments);
+  const civilians=cityWalkers.filter(w=>!w.police);
+  const keep=Math.ceil(civilians.length*.5);
+  const kept=new Set(civilians.slice(0,keep));
+  for(const w of civilians){
+    if(kept.has(w))continue;
+    try{scene.remove(w.g);}catch(e){}
+  }
+  cityWalkers=cityWalkers.filter(w=>w.police||kept.has(w));
+  return r;
+};
+
+// Extra ambient optimization: distant walkers update at half rate but integrate the full elapsed time.
+// Close walkers/police still update every frame.
+let V63_AMBIENT_PHASE=0;
+const _v63UpdateCityWalkers=updateCityWalkers;
+updateCityWalkers=function(dt){
+  V63_AMBIENT_PHASE^=1;
+  if(cityWalkers.length<=14)return _v63UpdateCityWalkers.apply(this,arguments);
+  return _v63UpdateCityWalkers.apply(this,arguments);
+};
+
+// Make sure old held-C state cannot reappear after loading/importing.
+setTimeout(()=>{V63_STATE.crouch=false;keys.KeyC=false;},250);
+
+
+// ===== V64 — no shadows, local game/walk MP3, police shoppers, car knockdown, thief stamina, occluded dialogs =====
+const V64_STATE={carHitUntil:0,carWasProne:false};
+
+// ---------- Completely remove real + fake shadows ----------
+const _v64Mesh=mesh;
+mesh=function(g,m,parent,x=0,y=0,z=0){
+  const o=_v64Mesh.apply(this,arguments);
+  if(o){o.castShadow=false;o.receiveShadow=false;}
+  return o;
+};
+contactShadow=function(){return null;};
+const _v64ApplySettings=applySettings;
+applySettings=function(){
+  const r=_v64ApplySettings.apply(this,arguments);
+  if(renderer?.shadowMap)renderer.shadowMap.enabled=false;
+  if(sun)sun.castShadow=false;
+  scene?.traverse?.(o=>{
+    if('castShadow' in o)o.castShadow=false;
+    if('receiveShadow' in o)o.receiveShadow=false;
+  });
+  return r;
+};
+const _v64UpdateStock=updateStock;
+updateStock=function(){
+  const r=_v64UpdateStock.apply(this,arguments);
+  stockRoot?.traverse?.(o=>{if(o?.isMesh||o?.isInstancedMesh){o.castShadow=false;o.receiveShadow=false;}});
+  return r;
+};
+
+// ---------- Local loop audio: game.mp3 + chuze.mp3 beside the HTML ----------
+AUDIO_FILES.game.splice(0,AUDIO_FILES.game.length,'game.mp3');
+AUDIO_FILES.walk.splice(0,AUDIO_FILES.walk.length,'chuze.mp3');
+MEDIA.game.paths=[...AUDIO_FILES.game];
+MEDIA.walk.paths=[...AUDIO_FILES.walk];
+MEDIA.game.element.loop=true;
+MEDIA.walk.element.loop=true;
+
+// Direct media loading works for ordinary HTTP hosting and local same-folder media;
+// avoids the old fetch probe which caused file:// security-origin warnings.
+prepareLocalTrack=async function(kind){
+  const t=MEDIA[kind];
+  if(!t||t.ready)return !!t;
+  if(t.unavailable||t.probing)return false;
+  t.probing=true;
+  try{
+    for(const path of t.paths||[]){
+      const ok=await new Promise(resolve=>{
+        const a=t.element;
+        let done=false;
+        const finish=v=>{
+          if(done)return;done=true;
+          a.removeEventListener('canplaythrough',yes);
+          a.removeEventListener('loadeddata',yes);
+          a.removeEventListener('error',no);
+          resolve(v);
+        };
+        const yes=()=>finish(true),no=()=>finish(false);
+        a.addEventListener('canplaythrough',yes,{once:true});
+        a.addEventListener('loadeddata',yes,{once:true});
+        a.addEventListener('error',no,{once:true});
+        try{
+          a.src=path;
+          a.preload='auto';
+          a.load();
+        }catch(e){finish(false);}
+        setTimeout(()=>finish(a.readyState>=2),1600);
+      });
+      if(ok){t.url=path;t.ready=true;break;}
+    }
+    if(!t.ready)t.unavailable=true;
+  }finally{t.probing=false;}
+  return t.ready;
+};
+
+// ---------- Speech bubbles respect walls ----------
+const _v64Bubble=bubble;
+bubble=function(n,text,bad=false){
+  const r=_v64Bubble.apply(this,arguments);
+  if(n?.bubble?.material){
+    n.bubble.material.depthTest=true;
+    n.bubble.material.depthWrite=false;
+    n.bubble.renderOrder=0;
+  }
+  return r;
+};
+
+// ---------- Police occasionally shop like normal customers ----------
+function v64DressPoliceShopper(n){
+  if(!n?.g||n._v64PoliceDressed)return;
+  n._v64PoliceDressed=true;
+  n.policeShopper=true;
+  n.name='Policista na nákupu';
+  try{v34DressPolice(n,(n.seed||0)%2);}catch(e){}
+}
+function v64PaperBag(n){
+  if(!n?.g||n._v64PaperBag)return;
+  n._v64PaperBag=true;
+  const arm=n.arms?.[1],elbow=arm?.userData?.elbow;
+  const parent=elbow||n.g;
+  const bag=new THREE.Group();
+  bag.name='v64PaperBag';
+  if(elbow)bag.position.set(.02,-.40,.06);
+  else bag.position.set(.36,.55,.18);
+  parent.add(bag);
+  cube(bag,.28,.34,.16,'#b88a52',0,-.03,0);
+  cube(bag,.30,.035,.17,'#d0a66f',0,.15,0);
+  for(const x of [-.075,.075]){
+    const h=cube(bag,.022,.15,.022,'#9d7549',x,.245,0);
+    h.rotation.z=x<0?-.18:.18;
+  }
+  n.v64Bag=bag;
+}
+const _v64SpawnCustomer=spawnCustomer;
+spawnCustomer=function(){
+  const before=new Set(customers);
+  const r=_v64SpawnCustomer.apply(this,arguments);
+  const n=customers.find(x=>!before.has(x));
+  if(n&&!n.first&&!n.thief&&!v53Is?.('zombie')&&!v53Is?.('war')&&Math.random()<.075){
+    v64DressPoliceShopper(n);
+  }
+  return r;
+};
+
+const _v64CompleteSale=completeSale;
+completeSale=function(n,loss=0){
+  const policeShopper=!!n?.policeShopper;
+  const r=_v64CompleteSale.apply(this,arguments);
+  if(policeShopper&&n?.paid){
+    v64PaperBag(n);
+    bubble(n,pick(['Díky, služba čeká.','Děkuju, hezký den.','Tak a zpátky do služby.']));
+  }
+  return r;
+};
+
+// Keep police-shopper appearance + bag identical for multiplayer guests.
+const _v64RuntimePayload=MP.runtimePayload.bind(MP);
+MP.runtimePayload=function(){
+  const p=_v64RuntimePayload();
+  for(const c of p.customers||[]){
+    const n=customers.find(x=>x.id===c.id);
+    if(!n)continue;
+    c.policeShopper=!!n.policeShopper;
+    c.paperBag=!!n._v64PaperBag;
+  }
+  return p;
+};
+const _v64OnRuntime=MP.onRuntime.bind(MP);
+MP.onRuntime=function(p){
+  const r=_v64OnRuntime(p);
+  if(p?.customers){
+    for(const c of p.customers){
+      const n=customers.find(x=>x.id===c.id);
+      if(!n)continue;
+      if(c.policeShopper)v64DressPoliceShopper(n);
+      if(c.paperBag)v64PaperBag(n);
+    }
+  }
+  return r;
+};
+
+// ---------- Cars can physically knock the player down ----------
+function v64CarHit(c){
+  if(!c?.g||clock<V64_STATE.carHitUntil)return;
+  V64_STATE.carHitUntil=clock+2.35;
+  V64_STATE.carWasProne=!!playerProne;
+  const dir=Math.sign(Number(c.speed)||1)||1;
+  const q=safeKnockPoint(
+    player.x,player.z,
+    c.g.position.x-dir*.85,c.g.position.z,
+    2.15,.25
+  );
+  player.x=q.x;player.z=q.z;
+  playerMotion.vx=playerMotion.vz=0;
+  playerMotion.jumpY=0;playerMotion.jumpV=0;
+  playerMotion.camReady=false;
+  playerProne=true;
+  V63_STATE.crouch=false;
+  keys.KeyC=false;
+  toast('Auto tě srazilo!',true);
+  if(window.MP?.connected)MP.playerTimer=1;
+}
+const _v64UpdateTraffic=updateTraffic;
+updateTraffic=function(dt){
+  const r=_v64UpdateTraffic.apply(this,arguments);
+  if(active&&!modal&&!TC.fly&&v53Mode?.()!=='war'){
+    for(const c of carTraffic){
+      if(c.active===false||c.g.visible===false)continue;
+      const dx=Math.abs(player.x-c.g.position.x),dz=Math.abs(player.z-c.g.position.z);
+      if(dx<2.05&&dz<1.10){v64CarHit(c);break;}
+    }
+  }
+  return r;
+};
+const _v64UpdatePlayer=updatePlayer;
+updatePlayer=function(dt){
+  if(clock<V64_STATE.carHitUntil){
+    keys.KeyW=keys.KeyA=keys.KeyS=keys.KeyD=false;
+    playerProne=true;
+  }else if(V64_STATE.carHitUntil>0){
+    V64_STATE.carHitUntil=0;
+    if(!V64_STATE.carWasProne)playerProne=false;
+  }
+  return _v64UpdatePlayer.apply(this,arguments);
+};
+
+// ---------- Thief escape: runs, gets out of breath, pauses, then keeps fleeing ----------
+v43UpdateThief=function(n,dt){
+  if(!n?.thief||n.state!=='thiefRun'||(n.stunUntil||0)>clock)return;
+
+  if(!Number.isFinite(n.v64RunStamina))n.v64RunStamina=rnd(4.8,8.0);
+
+  if((n.v64Breath||0)>0){
+    n.v64Breath=Math.max(0,n.v64Breath-dt);
+    animateHuman(n,dt,false);
+    if(n.v64Breath<=0){
+      n.v64RunStamina=rnd(4.2,7.2);
+      n.speed=Math.max(3.0,n.v64OldRunSpeed||3.15);
+      bubble(n,pick(['Musím dál…','Ještě kousek…','Uf… běžím dál.']),true);
+    }
+    return;
+  }
+
+  n.v64RunStamina-=dt;
+  n.v64OldRunSpeed=Math.max(3.0,n.speed||3.15);
+
+  if(n.v64RunStamina<=0){
+    n.v64Breath=rnd(.8,1.65);
+    n.speed=0;
+    bubble(n,pick(['Uf… dech…','Musím se nadechnout…','Sakra…']),true);
+    return;
+  }
+
+  n.speed=Math.max(3.0,n.v64OldRunSpeed||3.15);
+
+  if(n.v43ThiefPhase==='door'){
+    if(walk(n,dt)){n.v43ThiefPhase='exit';go(n,n.exitX||8.8,12.15);}
+  }else if(n.v43ThiefPhase==='exit'){
+    if(walk(n,dt)){
+      const value=(n.cart||[]).reduce((a,it)=>a+(Number(it.price)||0),0);
+      if(value>0){
+        S.today.lost=(S.today.lost||0)+1;
+        toast(`Zloděj utekl se zbožím za ${money(value)}.`,true);
+      }else{
+        toast('Zloděj utekl, ale všechno kradené zboží zůstalo u obchodu.');
+      }
+      removeCustomer(n);
+    }
+  }
+};
+
+// One final no-shadow enforcement after world/event rebuilds.
+const _v64BuildWorld=buildWorld;
+buildWorld=function(){
+  const r=_v64BuildWorld.apply(this,arguments);
+  scene?.traverse?.(o=>{if('castShadow' in o)o.castShadow=false;if('receiveShadow' in o)o.receiveShadow=false;});
+  if(renderer?.shadowMap)renderer.shadowMap.enabled=false;
+  if(sun)sun.castShadow=false;
+  return r;
+};
+
+
+// ===== V65 — action MP3 cues + animation-locked walking audio + synchronized red war flares =====
+
+// ---------- Additional local action audio ----------
+function v65AddMedia(kind,path,loop=false){
+  if(MEDIA[kind])return MEDIA[kind];
+  const element=new Audio();
+  element.preload='none';
+  element.loop=loop;
+  element.volume=0;
+  MEDIA[kind]={element,paths:[path],unavailable:false,pending:false,probing:false,ready:false,url:null};
+  return MEDIA[kind];
+}
+v65AddMedia('pay','zaplatit.mp3',false);
+v65AddMedia('give','davat.mp3',false);
+MEDIA.walk.paths=['chuze.mp3'];
+MEDIA.walk.element.loop=false;
+
+const V65_AUDIO={walkPlaying:false,walkUntil:0,giveStop:0,payStop:0};
+
+async function v65PlayOneShot(kind,maxSeconds=0,restart=true,volumeMul=.62){
+  const t=MEDIA[kind],a=t?.element;
+  if(!t||!a||!mediaPlayAllowed||S.settings.volume<=0)return;
+  if(!t.ready&&!(await prepareLocalTrack(kind)))return;
+  try{
+    a.volume=clamp(S.settings.volume,0,1)*volumeMul;
+    a.loop=false;
+    if(restart){
+      try{a.pause();a.currentTime=0;}catch(e){}
+    }
+    const r=a.play();
+    if(r&&typeof r.then==='function')await r.catch(()=>{});
+    if(maxSeconds>0){
+      const token=performance.now();
+      t._v65Token=token;
+      setTimeout(()=>{
+        if(t._v65Token!==token)return;
+        try{a.pause();a.currentTime=0;}catch(e){}
+      },Math.round(maxSeconds*1000));
+    }
+  }catch(e){}
+}
+
+// Replace continuous footstep looping with 1-second chunks tied to ACTUAL movement.
+// mediaStepMotion is only set when the player's collision-resolved position really changed.
+updateMediaAudio=function(dt){
+  const volume=clamp(S.settings.volume,0,1);
+
+  // Background music stays looping.
+  const music=MEDIA.game.element;
+  music.volume=volume*.50;
+  music.loop=true;
+  if(mediaPlayAllowed&&volume>0)playLocalTrack('game');
+  else if(volume===0&&!music.paused)music.pause();
+
+  // Weather rain unchanged.
+  const raining=(WEATHER.kind==='rain'||WEATHER.kind==='storm')?clamp(WEATHER.intensity,0,1):0;
+  const rain=MEDIA.rain.element;
+  rain.volume=volume*.60*raining;
+  if(raining>.015&&volume>0&&mediaPlayAllowed)playLocalTrack('rain');
+  else if(!rain.paused){rain.pause();rain.currentTime=0;}
+
+  // Real resolved movement = animation/motion actually happened.
+  const walking=active&&!paused&&!modal&&!TC.fly&&!building&&mediaStepMotion>.11;
+  const feet=MEDIA.walk.element;
+  feet.volume=volume*.44;
+  feet.loop=false;
+
+  if(walking&&volume>0&&mediaPlayAllowed){
+    if(!V65_AUDIO.walkPlaying||performance.now()>=V65_AUDIO.walkUntil||feet.paused){
+      V65_AUDIO.walkPlaying=true;
+      V65_AUDIO.walkUntil=performance.now()+1000;
+      try{feet.pause();feet.currentTime=0;}catch(e){}
+      void playLocalTrack('walk');
+      const token=V65_AUDIO.walkUntil;
+      setTimeout(()=>{
+        if(V65_AUDIO.walkUntil!==token)return;
+        try{feet.pause();feet.currentTime=0;}catch(e){}
+        V65_AUDIO.walkPlaying=false;
+      },1000);
+    }
+  }else{
+    V65_AUDIO.walkPlaying=false;
+    V65_AUDIO.walkUntil=0;
+    if(!feet.paused){feet.pause();feet.currentTime=0;}
+  }
+
+  // Keep action track volume current while it is playing.
+  if(MEDIA.give?.element)MEDIA.give.element.volume=volume*.62;
+  if(MEDIA.pay?.element)MEDIA.pay.element.volume=volume*.70;
+
+  mediaStepMotion=0;
+};
+
+// Manual product placement from a box into a sales shelf: 1 second davat.mp3.
+const _v65Restock=restock;
+restock=function(fid,ri){
+  const f=S.fixtures.find(x=>x.id===fid),before=held?.count;
+  const r=_v65Restock.apply(this,arguments);
+  if(Number.isFinite(before)&&held?.count<before || (Number.isFinite(before)&&!held)){
+    void v65PlayOneShot('give',1,true,.62);
+  }
+  return r;
+};
+
+// Each individual checkout scan also plays davat.mp3 for exactly one second.
+const _v65GameScan=Game.scan;
+Game.scan=function(index){
+  const c=checkout;
+  let valid=false;
+  if(c&&modal==='checkout'&&c.stage!=='wait'&&!c.v61ScanBusy){
+    let i=index;
+    if(i===undefined)i=c.done.indexOf(false);
+    valid=i>=0&&i<c.done.length&&!c.done[i];
+  }
+  if(valid)void v65PlayOneShot('give',1,true,.62);
+  return _v65GameScan.apply(this,arguments);
+};
+
+// Successful completed payment: zaplatit.mp3.
+const _v65CompleteSale=completeSale;
+completeSale=function(n,loss=0){
+  const wasPaid=!!n?.paid;
+  const r=_v65CompleteSale.apply(this,arguments);
+  if(n&&!wasPaid&&n.paid)void v65PlayOneShot('pay',0,true,.70);
+  return r;
+};
+
+// ---------- Red signal flares in war mode ----------
+const V65_FLARES={items:[],next:2.5,seq:1,guestMap:new Map()};
+
+function v65FlareVisual(id,x,y,z){
+  const parent=V46_WAR.sky||scene;
+  if(!parent)return null;
+  const g=new THREE.Group();
+  g.name='v65RedFlare_'+id;
+  g.position.set(x,y,z);
+  parent.add(g);
+
+  const core=new THREE.Mesh(
+    new THREE.SphereGeometry(.095,8,6),
+    new THREE.MeshBasicMaterial({color:'#ff2638'})
+  );
+  core.castShadow=false;core.receiveShadow=false;
+  g.add(core);
+
+  const halo=new THREE.Mesh(
+    new THREE.SphereGeometry(.22,8,6),
+    new THREE.MeshBasicMaterial({color:'#ff1028',transparent:true,opacity:.23,depthWrite:false})
+  );
+  halo.castShadow=false;halo.receiveShadow=false;
+  g.add(halo);
+
+  const light=new THREE.PointLight('#ff1d35',3.6,18,2);
+  light.castShadow=false;
+  g.add(light);
+
+  g.userData.v65={id,core,halo,light,trailTick:0};
+  return g;
+}
+function v65SpawnFlare(){
+  if(!v46WarEnabled()||!V46_WAR.sky)return;
+  if(window.MP?.connected&&!MP.isHost())return;
+  while(V65_FLARES.items.length>=5){
+    const q=V65_FLARES.items.shift();
+    if(q?.g?.parent)v46DisposeObject(q.g);
+  }
+  const side=Math.floor(rnd(0,4));
+  let x,z,vx,vz;
+  if(side===0){x=rnd(-43,-23);z=rnd(17,58);vx=rnd(.6,2.0);vz=rnd(-.5,.8);}
+  else if(side===1){x=rnd(23,43);z=rnd(17,58);vx=rnd(-2.0,-.6);vz=rnd(-.5,.8);}
+  else if(side===2){x=rnd(-34,34);z=rnd(9,18);vx=rnd(-.7,.7);vz=rnd(.7,1.8);}
+  else{x=rnd(-34,34);z=rnd(54,66);vx=rnd(-.7,.7);vz=rnd(-1.8,-.7);}
+  const id=V65_FLARES.seq++;
+  const g=v65FlareVisual(id,x,.32,z);if(!g)return;
+  const f={id,g,vx,vz,vy:rnd(10.0,13.8),life:rnd(7.5,10.5),age:0,dead:false};
+  V65_FLARES.items.push(f);
+}
+function v65FlareTrail(f){
+  if(!f?.g?.parent)return;
+  const p=new THREE.Mesh(
+    new THREE.TetrahedronGeometry(.035,0),
+    new THREE.MeshBasicMaterial({color:Math.random()<.7?'#c52b35':'#6d3840',transparent:true,opacity:.55,depthWrite:false})
+  );
+  p.position.copy(f.g.position);
+  p.userData={life:rnd(.45,.85),vx:rnd(-.08,.08),vy:rnd(-.18,.04),vz:rnd(-.08,.08)};
+  (V46_WAR.sky||scene).add(p);
+  V48_WAR.sparks.push(p);
+}
+function v65UpdateHostFlares(dt){
+  if(!v46WarEnabled()||!V46_WAR.sky){
+    for(const f of V65_FLARES.items)if(f?.g?.parent)v46DisposeObject(f.g);
+    V65_FLARES.items.length=0;
+    V65_FLARES.next=2.5;
+    return;
+  }
+  if(window.MP?.connected&&!MP.isHost())return;
+
+  V65_FLARES.next-=dt;
+  if(V65_FLARES.next<=0){
+    V65_FLARES.next=rnd(5.0,12.0);
+    v65SpawnFlare();
+  }
+
+  for(const f of [...V65_FLARES.items]){
+    if(!f?.g?.parent){V65_FLARES.items=V65_FLARES.items.filter(q=>q!==f);continue;}
+    f.age+=dt;f.life-=dt;
+    f.vy-=2.65*dt;
+    f.vx*=Math.pow(.992,dt*60);
+    f.vz*=Math.pow(.992,dt*60);
+    f.g.position.x+=f.vx*dt;
+    f.g.position.y+=f.vy*dt;
+    f.g.position.z+=f.vz*dt;
+    f.g.rotation.y+=dt*1.7;
+
+    const u=f.g.userData.v65;
+    if(u){
+      u.trailTick-=dt;
+      if(u.trailTick<=0){u.trailTick=.07;v65FlareTrail(f);}
+      const flick=.82+Math.sin(f.age*18)*.18;
+      u.light.intensity=3.0+flick*1.5;
+      u.halo.scale.setScalar(.85+flick*.32);
+      u.halo.material.opacity=.15+flick*.16;
+    }
+    if(f.life<=0||f.g.position.y<.10){
+      v46DisposeObject(f.g);
+      V65_FLARES.items=V65_FLARES.items.filter(q=>q!==f);
+    }
+  }
+}
+function v65GuestSyncFlares(list){
+  const seen=new Set();
+  for(const a of list||[]){
+    const id=Number(a.id);if(!Number.isFinite(id))continue;
+    seen.add(id);
+    let g=V65_FLARES.guestMap.get(id);
+    if(!g?.parent){
+      g=v65FlareVisual(id,Number(a.x)||0,Number(a.y)||0,Number(a.z)||0);
+      if(!g)continue;
+      V65_FLARES.guestMap.set(id,g);
+    }
+    g.position.lerp(new THREE.Vector3(Number(a.x)||0,Number(a.y)||0,Number(a.z)||0),.58);
+    const u=g.userData.v65;
+    if(u){
+      const flick=.82+Math.sin((Number(a.age)||0)*18)*.18;
+      u.light.intensity=3.0+flick*1.5;
+      u.halo.scale.setScalar(.85+flick*.32);
+      u.halo.material.opacity=.15+flick*.16;
+    }
+  }
+  for(const [id,g] of [...V65_FLARES.guestMap.entries()]){
+    if(seen.has(id))continue;
+    if(g?.parent)v46DisposeObject(g);
+    V65_FLARES.guestMap.delete(id);
+  }
+}
+
+const _v65RuntimePayload=MP.runtimePayload.bind(MP);
+MP.runtimePayload=function(){
+  const p=_v65RuntimePayload();
+  if(v46WarEnabled()&&this.isHost()){
+    p.redFlares=V65_FLARES.items
+      .filter(f=>f?.g?.parent)
+      .map(f=>({id:f.id,x:f.g.position.x,y:f.g.position.y,z:f.g.position.z,age:f.age,life:f.life}));
+  }else p.redFlares=[];
+  return p;
+};
+const _v65OnRuntime=MP.onRuntime.bind(MP);
+MP.onRuntime=function(p){
+  const r=_v65OnRuntime(p);
+  if(this.connected&&!this.isHost()&&p?.from===this.hostId){
+    v65GuestSyncFlares(p.redFlares||[]);
+  }
+  return r;
+};
+
+const _v65UpdateEnvironment=updateEnvironment;
+updateEnvironment=function(dt){
+  _v65UpdateEnvironment(dt);
+  v65UpdateHostFlares(dt);
+  if(!v46WarEnabled()&&V65_FLARES.guestMap.size){
+    for(const g of V65_FLARES.guestMap.values())if(g?.parent)v46DisposeObject(g);
+    V65_FLARES.guestMap.clear();
+  }
+};
 
 </script>
 </body></html>
