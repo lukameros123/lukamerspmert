@@ -1,0 +1,13 @@
+GHOST FOX — AKTUALIZOVANÝ E-SHOP
+
+Otevři index.html v prohlížeči, nebo použij jediný soubor GHOST_FOX_ESHOP.html.
+
+Varianty k objednání:
+- Celá souprava: 12 999,- Kč
+- Jen maska: 8 999,- Kč
+- Tlapy na ruce (pár): 2 499,- Kč
+- Tlapy na nohy (pár): 2 499,- Kč
+CENY JEDNOTLIVÝCH DÍLŮ JSOU ZATÍM NÁVRHOVÉ. UPRAV JE V KONSTANTĚ VARIANTS (index.html) A V TEXTECH KARET.
+
+Výběr varianty, fotografie, košík s více položkami, přepočet, ukázková pokladna a export přehledu objednávky fungují i offline.
+Objednávky se zatím neodesílají prodejci a žádná skutečná platba neprobíhá.
