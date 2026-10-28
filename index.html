@@ -6,72 +6,80 @@
   <meta name="theme-color" content="#08090c">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>AI Camera</title>
+  <title>AI Camera v4</title>
   <style>
-    :root { color-scheme: dark; --red: #ff283b; --bg: #07090e; --white: #f6f7fa; --muted: #a3a8b3; }
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html,body { margin:0; width:100%; height:100%; overflow:hidden; background:var(--bg); font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--white); }
-    button,input { font:inherit; }
-    button { cursor:pointer; }
-    .app { position:relative; height:100%; height:100dvh; width:100%; overflow:hidden; isolation:isolate; }
-    .scene { position:absolute; inset:0; background:linear-gradient(165deg,#0e111a 0%,#08090d 60%,#11090d 100%); }
-    .scene::after { content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 50% 75%,transparent 10%,#0008 100%); }
-    .camera { width:100%; height:100%; object-fit:cover; display:block; transform-origin:center; opacity:0; transition:opacity .24s ease; }
-    .is-running .camera { opacity:1; }
-    #boxes { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
-    .scanline { pointer-events:none; position:absolute; inset:0; opacity:0; background:linear-gradient(transparent 49.95%,#ff293322 50%,transparent 50.05%); }
-    .is-running .scanline { opacity:1; }
-    .landing { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:31px; padding:28px; background:radial-gradient(circle at 50% 43%,#17111c 0%,#0c0d13 44%,#07090e 85%); z-index:3; transition:opacity .2s; }
-    .is-running .landing { opacity:0; pointer-events:none; visibility:hidden; }
-    .mark { position:relative; width:100px; height:100px; border:1px solid #ffffff20; border-radius:27px; display:grid; place-items:center; background:#ffffff06; box-shadow:0 20px 70px #0008; }
-    .mark svg { width:49px; height:49px; stroke:var(--red); stroke-width:1.9; fill:none; stroke-linecap:round; stroke-linejoin:round; }
-    .mark:before,.mark:after { content:""; position:absolute; width:17px; height:17px; border:2px solid var(--red); }
-    .mark:before { top:-5px; left:-5px; border-right:0; border-bottom:0; border-top-left-radius:7px; }
-    .mark:after { right:-5px; bottom:-5px; border-top:0; border-left:0; border-bottom-right-radius:7px; }
-    .brand { margin:0; font-size:clamp(26px,8vw,38px); font-weight:760; letter-spacing:.17em; white-space:nowrap; }
-    .brand b { color:var(--red); }
-    .choices { display:flex; background:#ffffff09; padding:5px; gap:5px; border:1px solid #ffffff13; border-radius:18px; width:min(100%,300px); }
-    .choice { flex:1; min-height:51px; padding:10px 14px; border:0; border-radius:13px; background:transparent; color:#9ea2ae; font-size:15px; font-weight:700; }
-    .choice[aria-pressed="true"] { color:white; background:#2b2029; box-shadow:inset 0 0 0 1px #ff283b55; }
-    .start { width:min(100%,300px); height:60px; border:0; border-radius:17px; color:white; background:var(--red); font-weight:850; font-size:16px; letter-spacing:.13em; box-shadow:0 12px 34px #ff283b33; }
-    .start:disabled { opacity:.55; cursor:default; }
-    .start:active { transform:scale(.98); }
-    .toolbar { position:absolute; z-index:2; top:calc(env(safe-area-inset-top,0px) + 16px); left:15px; right:15px; display:flex; align-items:flex-start; gap:12px; justify-content:space-between; opacity:0; pointer-events:none; transition:opacity .2s; }
-    .is-running .toolbar,.is-running .bottom { opacity:1; pointer-events:auto; }
-    .counter { background:#050508c9; border:1px solid #ffffff28; border-radius:17px; padding:10px 13px; min-width:128px; backdrop-filter:blur(12px); }
-    .counter-top { font-size:10px; letter-spacing:.13em; display:flex; align-items:center; gap:7px; font-weight:750; color:#e3e2e5; }
-    .live-dot { width:7px; height:7px; border-radius:50%; background:var(--red); box-shadow:0 0 10px var(--red); }
-    .counter-big { margin-top:3px; display:flex; gap:9px; align-items:baseline; }
-    #number { font-size:40px; line-height:1.05; font-weight:850; font-variant-numeric:tabular-nums; }
-    #plural { color:#c3c5ce; font-size:12px; font-weight:750; letter-spacing:.04em; }
-    .mode-switch { display:flex; padding:4px; border-radius:14px; border:1px solid #ffffff2b; background:#050508c9; backdrop-filter:blur(12px); gap:3px; }
-    .mode-switch button { border:none; border-radius:10px; padding:11px 10px; background:none; color:#9ea2aa; font-size:12px; font-weight:780; }
-    .mode-switch button[aria-pressed="true"] { background:#ff283b; color:white; }
-    .bottom { position:absolute; left:15px; right:15px; bottom:calc(env(safe-area-inset-bottom,0px) + 17px); z-index:2; display:flex; justify-content:space-between; align-items:flex-end; gap:12px; opacity:0; pointer-events:none; transition:opacity .2s; }
-    .stop { color:#fff; background:#060609d9; backdrop-filter:blur(12px); border:1px solid #ffffff31; height:49px; padding:0 17px; border-radius:14px; font-weight:760; font-size:12px; letter-spacing:.04em; }
-    .zoom { background:#060609d9; backdrop-filter:blur(12px); border:1px solid #ffffff31; border-radius:14px; padding:10px 12px 10px; width:156px; }
-    .zoomhead { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:11px; font-weight:750; letter-spacing:.08em; }
-    .zoomhead output { color:#ff5364; font-size:13px; font-variant-numeric:tabular-nums; }
-    input[type=range] { appearance:none; -webkit-appearance:none; display:block; height:18px; margin:7px 0 0; width:100%; background:transparent; }
-    input[type=range]::-webkit-slider-runnable-track { height:3px; background:linear-gradient(90deg,var(--red),#6b333d); border-radius:20px; }
-    input[type=range]::-moz-range-track { height:3px; background:var(--red); border-radius:20px; }
-    input[type=range]::-webkit-slider-thumb { appearance:none; width:16px; height:16px; margin-top:-6.5px; border-radius:50%; background:white; border:3px solid var(--red); }
-    input[type=range]::-moz-range-thumb { width:12px; height:12px; border-radius:50%; background:white; border:3px solid var(--red); }
-    .message { position:absolute; bottom:calc(env(safe-area-inset-bottom,0px) + 107px); left:50%; transform:translateX(-50%); max-width:calc(100% - 30px); width:max-content; z-index:3; text-align:center; font-size:12px; font-weight:670; line-height:1.5; padding:9px 13px; background:#060609dc; border:1px solid #ffffff2a; border-radius:12px; color:#fff; opacity:0; transition:opacity .15s; pointer-events:none; }
-    .message.show { opacity:1; }
-    .landing .message { bottom:calc(env(safe-area-inset-bottom,0px) + 32px); }
-    @media (max-width:350px) { .mode-switch button { padding:10px 7px; } .counter { padding:9px; min-width:115px; } #number { font-size:33px; } }
+    :root{color-scheme:dark;--red:#ff3047;--bg:#07090e;--white:#f6f7fa}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--white);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+    button,input{font:inherit}button{cursor:pointer;touch-action:manipulation}
+    .app{position:relative;width:100%;height:100%;height:100dvh;overflow:hidden;isolation:isolate}
+    .scene{position:absolute;inset:0;background:#06080b}
+    /* GPU compositing keeps the zoom responsive without creating 100x image data. */
+    .camera{width:100%;height:100%;object-fit:cover;display:block;transform-origin:center;opacity:0;transition:opacity .15s linear;will-change:transform}
+    .scene{touch-action:none}
+    .is-running .camera{opacity:1}
+    #boxes{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+    .landing{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:20px max(18px,env(safe-area-inset-left)) 20px max(18px,env(safe-area-inset-right));background:radial-gradient(circle at 50% 43%,#17111c 0%,#0c0d13 48%,#07090e 86%)}
+    .is-running .landing{visibility:hidden;pointer-events:none}
+    .mark{width:92px;height:92px;border:1px solid #ffffff26;border-radius:25px;display:grid;place-items:center;background:#ffffff06;position:relative;box-shadow:0 17px 55px #0008}
+    .mark svg{width:47px;height:47px;stroke:var(--red);stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .mark:before,.mark:after{content:"";position:absolute;width:16px;height:16px;border:2px solid var(--red)}
+    .mark:before{top:-4px;left:-4px;border-right:0;border-bottom:0;border-top-left-radius:6px}
+    .mark:after{bottom:-4px;right:-4px;border-left:0;border-top:0;border-bottom-right-radius:6px}
+    .brand{margin:0;font-size:clamp(25px,8vw,37px);font-weight:800;letter-spacing:.15em;white-space:nowrap}.brand b{color:var(--red)}
+    .choices{display:flex;gap:5px;padding:5px;border:1px solid #ffffff17;border-radius:17px;background:#ffffff08;width:min(100%,300px)}
+    .choice{flex:1;min-height:48px;border:0;border-radius:12px;background:transparent;color:#a0a4ae;font-size:14px;font-weight:800}
+    .choice[aria-pressed=true]{background:#35232a;color:white;box-shadow:inset 0 0 0 1px #ff304755}
+    .start{height:58px;width:min(100%,300px);background:var(--red);border:0;color:white;border-radius:17px;font-size:16px;font-weight:850;letter-spacing:.14em;box-shadow:0 12px 35px #ff30472f}
+    .start:disabled{opacity:.55}.start:active{transform:scale(.98)}
+    .fullscreen-landing{height:44px;width:min(100%,300px);margin-top:-15px;background:#ffffff0a;border:1px solid #ffffff30;border-radius:13px;color:#e6e7eb;font-size:12px;font-weight:800;letter-spacing:.07em;display:flex;align-items:center;justify-content:center;gap:10px}
+    .fullscreen-landing svg,.fullscreen-running svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linejoin:round;stroke-linecap:round}
+    .fullscreen-landing:active,.fullscreen-running:active{background:#ffffff28}
+    .top-right{display:flex;gap:7px;align-items:flex-start}
+    .fullscreen-running{width:42px;height:42px;display:grid;place-items:center;border:1px solid #ffffff2c;border-radius:13px;background:#040407d9;color:white}
+
+    .toolbar{position:absolute;z-index:2;top:calc(env(safe-area-inset-top,0px) + 12px);left:calc(env(safe-area-inset-left,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);display:flex;align-items:flex-start;justify-content:space-between;gap:10px;opacity:0;pointer-events:none}
+    .is-running .toolbar,.is-running .bottom{opacity:1;pointer-events:auto}
+    .counter{display:flex;flex-direction:column;gap:8px;min-width:148px;padding:11px 13px;background:#040407d9;border:1px solid #ffffff29;border-radius:17px;}
+    .counter-head{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:.11em}
+    .live-dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red)}
+    .count-line{display:flex;align-items:baseline;gap:8px}.count-line strong{font-size:36px;line-height:1;font-weight:850;font-variant-numeric:tabular-nums}.count-line span{font-size:11px;font-weight:750;color:#c3c5cc;letter-spacing:.05em}
+    .count-divider{height:1px;background:#ffffff25}
+    .total-line{display:flex;align-items:center;gap:8px;justify-content:space-between}.total-main{display:flex;flex-direction:column;gap:2px}
+    .total-label{font-size:9px;letter-spacing:.11em;font-weight:800;color:#b2b5bf}.total-value{font-size:25px;line-height:1.05;font-weight:850;font-variant-numeric:tabular-nums;color:white}
+    .reset{border:1px solid #ffffff27;border-radius:9px;width:31px;height:31px;background:#ffffff0e;color:#d5d7e0;font-size:21px;display:grid;place-items:center;line-height:1}
+    .reset:active{background:#ff304744}
+    .mode-switch{display:flex;gap:3px;padding:4px;background:#040407d9;border:1px solid #ffffff2c;border-radius:14px;}
+    .mode-switch button{border:0;border-radius:10px;padding:11px 10px;background:none;color:#a6a9b0;font-size:12px;font-weight:800}
+    .mode-switch button[aria-pressed=true]{background:var(--red);color:white}
+    .bottom{position:absolute;z-index:2;bottom:calc(env(safe-area-inset-bottom,0px) + 13px);left:calc(env(safe-area-inset-left,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);display:flex;justify-content:space-between;align-items:flex-end;gap:10px;opacity:0;pointer-events:none}
+    .stop,.zoom{background:#040407dc;border:1px solid #ffffff35;border-radius:14px;}
+    .stop{height:47px;padding:0 15px;color:white;font-size:12px;font-weight:750;letter-spacing:.04em}
+    .zoom{width:min(240px,62vw);padding:9px 12px}.zoom-head{display:flex;justify-content:space-between;gap:7px;align-items:center;font-size:10px;font-weight:800;letter-spacing:.08em}.zoom-head output{color:#ff6575;font-size:13px;font-variant-numeric:tabular-nums}
+    .zoom-marks{display:flex;justify-content:space-between;gap:2px;margin-top:4px}.zoom-marks button{border:0;background:transparent;color:#c4c4cb;padding:4px 3px;font-size:10px;font-weight:700;min-width:29px}.zoom-marks button:active{color:var(--red)}.zoom-head output{font-size:15px!important}.zoom-head .digital-label{color:#c4c4cb;font-size:9px;letter-spacing:0;white-space:nowrap;font-weight:600}.zoom-head .digital-label:empty{display:none}
+    input[type=range]{-webkit-appearance:none;appearance:none;display:block;height:18px;margin:7px 0 0;width:100%;background:transparent;touch-action:pan-x}
+    input[type=range]::-webkit-slider-runnable-track{height:3px;background:linear-gradient(90deg,var(--red),#79343d);border-radius:9px}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;margin-top:-7px;border-radius:50%;background:white;border:3px solid var(--red)}
+    input[type=range]::-moz-range-track{height:3px;background:var(--red)}
+    input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:white;border:2px solid var(--red)}
+    .message{position:absolute;z-index:4;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 103px);transform:translateX(-50%);max-width:calc(100% - 28px);width:max-content;padding:9px 13px;border:1px solid #ffffff35;border-radius:12px;background:#050508e8;color:white;text-align:center;font-size:12px;font-weight:650;line-height:1.4;opacity:0;pointer-events:none}.message.show{opacity:1}
+    @media(max-width:350px){.counter{min-width:124px;padding:9px}.count-line strong{font-size:31px}.mode-switch button{padding:9px 7px;font-size:11px}.fullscreen-running{width:35px;height:39px}.top-right{gap:4px}.zoom{width:160px}}
+    @media(orientation:landscape), (max-height:490px){
+      .landing{gap:9px}.fullscreen-landing{height:35px;width:240px;margin-top:-6px;font-size:10px;border-radius:10px}.fullscreen-landing svg{width:15px;height:15px}.fullscreen-running{width:35px;height:35px;border-radius:10px}.mark{width:52px;height:52px;border-radius:16px}.mark svg{width:31px;height:31px}.brand{font-size:24px}.choices{width:240px;padding:3px}.choice{min-height:34px;font-size:12px}.start{width:240px;height:41px;font-size:13px;border-radius:12px}
+      .toolbar{top:calc(env(safe-area-inset-top,0px) + 7px)}.counter{flex-direction:row;align-items:center;min-width:0;padding:7px 10px;gap:11px;border-radius:12px}.counter-head{font-size:9px}.count-line{gap:5px}.count-line strong{font-size:28px}.count-line span{font-size:10px}.live-block{min-width:78px}.count-divider{height:35px;width:1px}.total-label{font-size:8px}.total-value{font-size:20px}.total-line{gap:6px}.reset{width:28px;height:28px;font-size:19px}
+      .mode-switch{padding:3px;border-radius:11px}.mode-switch button{padding:8px 10px;font-size:11px}.bottom{bottom:calc(env(safe-area-inset-bottom,0px) + 7px)}.stop{height:39px;font-size:11px}.zoom{width:220px;padding:5px 9px}.zoom-marks{margin-top:0}.zoom-marks button{font-size:9px;padding:1px 3px}.zoom-head{font-size:9px}.zoom input{margin-top:3px}.message{bottom:calc(env(safe-area-inset-bottom,0px) + 68px)}
+    }
+    @media(orientation:landscape) and (max-height:300px){.mark{display:none}.landing{gap:7px}.brand{font-size:20px}.fullscreen-landing{height:30px}}
   </style>
 </head>
 <body>
 <div class="app" id="app">
   <div class="scene">
-    <video class="camera" id="camera" autoplay muted playsinline></video>
+    <video id="camera" class="camera" autoplay muted playsinline></video>
     <canvas id="boxes" aria-label="Červené rámečky rozpoznaných objektů"></canvas>
-    <div class="scanline"></div>
   </div>
 
-  <main class="landing" id="landing">
+  <main class="landing">
     <div class="mark" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M11 6H6v8M37 6h5v8M6 34v8h8M42 34v8h-8"/><rect x="13" y="17" width="22" height="16" rx="4"/><path d="m20 17 3-4h7l3 4"/><circle cx="24" cy="25" r="4"/></svg></div>
     <h1 class="brand">AI <b>CAMERA</b></h1>
     <div class="choices" role="group" aria-label="Režim detekce">
@@ -79,330 +87,439 @@
       <button class="choice" type="button" data-mode="cars" aria-pressed="false">AUTA</button>
     </div>
     <button class="start" id="start" type="button">START</button>
+    <button class="fullscreen-landing" id="fullscreenLanding" type="button" aria-pressed="false" aria-label="Zapnout režim celé obrazovky">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></svg><span>CELÁ OBRAZOVKA</span>
+    </button>
   </main>
 
-  <header class="toolbar" aria-label="Detekce">
-    <div class="counter"><div class="counter-top"><span class="live-dot"></span><span id="state">AI KAMERA</span></div><div class="counter-big"><span id="number">0</span><span id="plural">LIDÉ</span></div></div>
-    <div class="mode-switch" role="group" aria-label="Přepnout detekci">
-      <button type="button" data-mode="people" aria-pressed="true">LIDÉ</button>
-      <button type="button" data-mode="cars" aria-pressed="false">AUTA</button>
+  <header class="toolbar" aria-label="Počítadlo detekce">
+    <div class="counter">
+      <div class="live-block"><div class="counter-head"><span class="live-dot"></span><span id="state">LIVE</span></div><div class="count-line"><strong id="number">0</strong><span id="plural">LIDÉ</span></div></div>
+      <div class="count-divider"></div>
+      <div class="total-line"><div class="total-main"><span class="total-label">ZAZNAMENÁNO</span><strong class="total-value" id="total">0</strong></div><button type="button" class="reset" id="reset" title="Vynulovat zaznamenané objekty" aria-label="Vynulovat počítadlo zaznamenaných">↺</button></div>
+    </div>
+    <div class="top-right">
+      <div class="mode-switch" role="group" aria-label="Přepnout detekci">
+        <button type="button" data-mode="people" aria-pressed="true">LIDÉ</button>
+        <button type="button" data-mode="cars" aria-pressed="false">AUTA</button>
+      </div>
+      <button class="fullscreen-running" id="fullscreenRunning" type="button" title="Celá obrazovka" aria-label="Přepnout zobrazení na celou obrazovku" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></svg>
+      </button>
     </div>
   </header>
 
   <div class="bottom">
     <button class="stop" id="stop" type="button">■ ZASTAVIT</button>
-    <div class="zoom">
-      <div class="zoomhead"><span>PŘIBLÍŽENÍ</span><output id="zoomLabel" for="zoom">1×</output></div>
-      <input id="zoom" type="range" min="1" max="4" step="0.5" value="1" aria-label="Přiblížení kamery">
-    </div>
+    <div class="zoom"><div class="zoom-head"><span>PŘIBLÍŽENÍ <small class="digital-label" id="zoomType"></small></span><output id="zoomLabel" for="zoom">1×</output></div><input type="range" id="zoom" min="0" max="1000" step="1" value="0" aria-label="Přiblížení kamery 1 až 100 krát" aria-valuetext="1×"><div class="zoom-marks"><button type="button" data-zoom="1">1×</button><button type="button" data-zoom="5">5×</button><button type="button" data-zoom="20">20×</button><button type="button" data-zoom="100">100×</button></div></div>
   </div>
   <div class="message" id="message" aria-live="polite"></div>
 </div>
-
 <script>
 'use strict';
 (() => {
-  const $ = (id) => document.getElementById(id);
-  const app = $('app'), video = $('camera'), overlay = $('boxes');
-  const number = $('number'), plural = $('plural'), state = $('state'), msg = $('message');
-  const zoomInput = $('zoom'), zoomLabel = $('zoomLabel'), startButton = $('start');
-  const ctx = overlay.getContext('2d', {alpha: true});
+  const $ = id => document.getElementById(id);
+  const app = $('app'), video = $('camera'), canvas = $('boxes');
+  const ctx = canvas.getContext('2d');
+  const number = $('number'), total = $('total'), plural = $('plural'), state = $('state');
+  const zoom = $('zoom'), zoomLabel = $('zoomLabel'), zoomType=$('zoomType'),startButton = $('start'), message = $('message');
   const frame = document.createElement('canvas');
-  frame.width = 300; frame.height = 300;
-  const frameCtx = frame.getContext('2d', {willReadFrequently: true});
-  let mode = 'people', running = false, model = null, stream = null, wake = null;
-  let track = null, nativeZoom = false, digitalZoom = 1;
-  let generation = 0, currentTile = 0, tiles = [], regionResults = [];
-  let inferenceTimer = null, zoomTimer = null, toastTimer = null, busy = false;
-  let view = null;
-
-  const CLASS_SETS = {
-    people: new Set(['person']),
-    cars: new Set(['car','truck','bus'])
-  };
-  const SCRIPTS = [
+  // Keep this lightweight on the Galaxy A22: detailed tiles improve the
+  // apparent pixel size of small people without a much heavier AI model.
+  frame.width = frame.height = 300;
+  const frameCtx = frame.getContext('2d', {alpha: false, willReadFrequently: false});
+  const modelScripts = [
     'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js',
     'https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js'
   ];
+  const classes = {people: new Set(['person']), cars: new Set(['car','truck','bus'])};
+  const counters = {people:{total:0, tracks:[]},cars:{total:0, tracks:[]}};
+  let mode='people',running=false,model=null,stream=null,track=null,wake=null;
+  let nativeZoom=false,digitalZoom=1,actualNative=1,maxNative=1,focusOption=null;
+  let generation=0,zoomSequence=0,lastDraw=0,lastZoomValue=1;
+  let view=null,mainTiles=[],detailTiles=[],mainCursor=0,detailCursor=0,iteration=0;
+  let estimatedMs=170,inferenceTimer=0,zoomTimer=0,messageTimer=0,busy=false;
+  let consecutiveErrors=0,scanKind='fast';
+  let scanRevision=0;
 
-  function toast(text, ms=3200) {
-    clearTimeout(toastTimer);
-    msg.textContent = text;
-    msg.classList.toggle('show', Boolean(text));
-    if(text && ms > 0) toastTimer = setTimeout(() => msg.classList.remove('show'), ms);
+  function toast(text,ms=3000){
+    clearTimeout(messageTimer);message.textContent=text;
+    message.classList.toggle('show',!!text);
+    if(text&&ms)messageTimer=setTimeout(()=>message.classList.remove('show'),ms);
   }
-  function chooseMode(next) {
-    if (mode === next) return;
-    mode = next;
-    document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
-    plural.textContent = mode === 'people' ? 'LIDÉ' : 'AUTA';
-    number.textContent = '0';
-    resetDetections();
+  function updateCounts(){total.textContent=String(counters[mode].total);}
+  function setMode(next){
+    if(!classes[next]||mode===next)return;
+    mode=next;
+    document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));
+    plural.textContent=mode==='people'?'LIDÉ':'AUTA';
+    number.textContent='0';updateCounts();clearScan();
   }
-  document.querySelectorAll('[data-mode]').forEach(b => b.addEventListener('click', () => chooseMode(b.dataset.mode)));
+  document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+  $('reset').addEventListener('click',()=>{
+    counters[mode].total=0;
+    // Existing visible objects must not immediately add themselves again.
+    counters[mode].tracks.forEach(t=>t.counted=true);
+    updateCounts();toast('Počítadlo vynulováno.',1500);
+  });
 
-  function loadScript(url) {
-    return new Promise((resolve,reject) => {
-      const script = document.createElement('script');
-      script.src = url; script.async = true;
-      script.onload = resolve; script.onerror = () => reject(new Error('Nepodařilo se načíst AI knihovny. Zkontroluj internet.'));
-      document.head.appendChild(script);
-    });
+  function syncFullscreen(){
+    const active=!!document.fullscreenElement;
+    const landing=$('fullscreenLanding'),live=$('fullscreenRunning');
+    landing.setAttribute('aria-pressed',String(active));
+    live.setAttribute('aria-pressed',String(active));
+    landing.querySelector('span').textContent=active?'UKONČIT CELOU OBRAZOVKU':'CELÁ OBRAZOVKA';
+    live.title=active?'Ukončit celou obrazovku':'Celá obrazovka';
+    live.setAttribute('aria-label',live.title);
+    changedSize();
   }
-  async function loadModel() {
-    if(model) return model;
-    if(!window.tf) await loadScript(SCRIPTS[0]);
-    if(!window.cocoSsd) await loadScript(SCRIPTS[1]);
-    if(!window.tf || !window.cocoSsd) throw new Error('AI knihovny nejsou dostupné.');
-    try { await tf.setBackend('webgl'); } catch (e) { /* CPU fallback */ }
+  async function toggleFullscreen(){
+    try{
+      if(document.fullscreenElement)await document.exitFullscreen();
+      else if(app.requestFullscreen)await app.requestFullscreen({navigationUI:'hide'});
+      else throw new Error('Prohlížeč nepodporuje režim celé obrazovky.');
+    }catch(e){toast('Celá obrazovka zde není povolena. Zkus Chrome na mobilu.',3200);}
+    syncFullscreen();
+  }
+  $('fullscreenLanding').addEventListener('click',toggleFullscreen);
+  $('fullscreenRunning').addEventListener('click',toggleFullscreen);
+  document.addEventListener('fullscreenchange',syncFullscreen);
+
+  function loadScript(url){return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');s.src=url;s.async=true;
+    s.onload=resolve;s.onerror=()=>reject(new Error('Nepodařilo se načíst AI. Zkontroluj internet.'));
+    document.head.appendChild(s);
+  });}
+  async function loadModel(){
+    if(model)return model;
+    if(!window.tf)await loadScript(modelScripts[0]);
+    if(!window.cocoSsd)await loadScript(modelScripts[1]);
+    if(!window.tf||!window.cocoSsd)throw new Error('AI knihovny nejsou dostupné.');
+    try{tf.enableProdMode();}catch(e){}
+    try{await tf.setBackend('webgl');}catch(e){}
     await tf.ready();
-    model = await cocoSsd.load({base:'lite_mobilenet_v2'});
+    model=await cocoSsd.load({base:'lite_mobilenet_v2'});
     return model;
   }
-
-  async function wakeUp() {
-    if (!running || document.visibilityState !== 'visible' || !navigator.wakeLock || (wake && !wake.released)) return;
-    try { wake = await navigator.wakeLock.request('screen'); } catch(e) { /* unsupported/blocked */ }
+  async function lockScreen(){
+    if(!running||document.visibilityState!=='visible'||!navigator.wakeLock||(wake&&!wake.released))return;
+    try{wake=await navigator.wakeLock.request('screen');}catch(e){}
   }
-  function releaseWake() {
-    if (wake) { const old=wake; wake=null; old.release().catch(() => {}); }
-  }
-  async function openCamera(token) {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      throw new Error('Kamera vyžaduje HTTPS a povolení přístupu.');
-    }
+  function unlockScreen(){if(wake){const old=wake;wake=null;old.release().catch(()=>{});}}
+  async function openCamera(token){
+    if(!navigator.mediaDevices?.getUserMedia)throw new Error('Kamera vyžaduje HTTPS a povolení přístupu.');
     let s;
-    try {
-      s = await navigator.mediaDevices.getUserMedia({
-        audio:false,
-        video:{ facingMode:{ideal:'environment'}, width:{ideal:1920}, height:{ideal:1080}, frameRate:{ideal:24,max:30} }
-      });
-    } catch(e) {
-      if(e.name === 'OverconstrainedError') {
-        s = await navigator.mediaDevices.getUserMedia({audio:false, video:{facingMode:'environment'}});
-      } else throw e;
+    try{
+      s=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:24,max:30}}});
+    }catch(e){
+      if(e.name!=='OverconstrainedError')throw e;
+      s=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:'environment'}});
     }
-    if(!running || token!==generation) {s.getTracks().forEach(t=>t.stop()); return;}
-    stream=s; track=s.getVideoTracks()[0];
-    nativeZoom=false;
-    try {const c=track.getCapabilities?.(); nativeZoom=Boolean(c && c.zoom && Number.isFinite(c.zoom.min) && Number.isFinite(c.zoom.max) && c.zoom.max>c.zoom.min);} catch(e) {}
-    video.srcObject = s;
-    await video.play();
-    await new Promise(r=> video.readyState>=2 ? r() : video.addEventListener('loadeddata',r,{once:true}));
+    if(!running||token!==generation){s.getTracks().forEach(t=>t.stop());return;}
+    stream=s;track=s.getVideoTracks()[0];
+    try{
+      const cap=track.getCapabilities?.()||{};
+      nativeZoom=!!(cap.zoom&&Number.isFinite(cap.zoom.min)&&Number.isFinite(cap.zoom.max)&&cap.zoom.max>cap.zoom.min);
+      maxNative=nativeZoom?Math.max(1,cap.zoom.max):1;
+      actualNative=nativeZoom?Math.max(1,track.getSettings?.()?.zoom||cap.zoom.min||1):1;
+      // Ask for continuous autofocus only if the device reports it.
+      focusOption=Array.isArray(cap.focusMode)&&cap.focusMode.includes('continuous')?'continuous':null;
+      if(focusOption){try{await track.applyConstraints({advanced:[{focusMode:focusOption}]});}catch(e){focusOption=null;}}
+    }catch(e){nativeZoom=false;maxNative=actualNative=1;focusOption=null;}
+    if(!running||token!==generation)return;
+    video.srcObject=s;await video.play();
+    if(video.readyState<2)await new Promise(resolve=>video.addEventListener('loadeddata',resolve,{once:true}));
   }
-
-  // Converts the portion of the camera actually visible under object-fit:cover
-  // and digital zoom into camera-image pixel coordinates.
-  function visibleRegion() {
-    const vw=video.videoWidth, vh=video.videoHeight, W=app.clientWidth, H=app.clientHeight;
-    if(!vw || !vh || !W || !H) return null;
+  function visibleRegion(){
+    const vw=video.videoWidth,vh=video.videoHeight,W=app.clientWidth,H=app.clientHeight;
+    if(!vw||!vh||!W||!H)return null;
     const cover=Math.max(W/vw,H/vh);
-    const w=Math.min(vw,W/cover/digitalZoom), h=Math.min(vh,H/cover/digitalZoom);
-    return {x:(vw-w)/2,y:(vh-h)/2,w,h,W,H};
+    const w=Math.min(vw,W/cover/digitalZoom),h=Math.min(vh,H/cover/digitalZoom);
+    return{x:(vw-w)/2,y:(vh-h)/2,w,h};
   }
-
-  function createTiles() {
+  function positions(origin,length,size){
+    if(length<=size*1.10)return[origin+(length-size)/2];
+    const count=Math.ceil((length-size)/(size*.86))+1;
+    return Array.from({length:count},(_,i)=>origin+(length-size)*i/(count-1));
+  }
+  function gridTiles(region,scale){
+    const size=Math.min(region.w,region.h)*scale;
+    const xs=positions(region.x,region.w,size),ys=positions(region.y,region.h,size);
+    const tiles=[];
+    for(const y of ys)for(const x of xs)tiles.push({x,y,w:size,h:size});
+    const cx=region.x+region.w/2,cy=region.y+region.h/2;
+    tiles.sort((a,b)=>Math.hypot(a.x+a.w/2-cx,a.y+a.h/2-cy)-Math.hypot(b.x+b.w/2-cx,b.y+b.h/2-cy));
+    return tiles;
+  }
+  function clearScan(){
+    scanRevision++;
     view=visibleRegion();
-    if(!view) {tiles=[];regionResults=[];return;}
-    const {x,y,w,h} = view;
-    // Square 300x300 AI crops, approximately 2x3/3x2 at normal zoom.
-    // This is more useful for tiny, distant targets than shrinking the entire image.
-    const size=Math.min(w,h)*.73;
-    const cols=Math.max(1,Math.ceil((w-size)/(size*.88))+1);
-    const rows=Math.max(1,Math.ceil((h-size)/(size*.88))+1);
-    const next=[];
-    for(let j=0;j<rows;j++) for(let i=0;i<cols;i++) {
-      next.push({
-        x:x+(cols===1?0:(w-size)*i/(cols-1)),
-        y:y+(rows===1?0:(h-size)*j/(rows-1)), w:size,h:size
-      });
-    }
-    tiles=next; regionResults=next.map(()=>[]);
-    currentTile=0; number.textContent='0';
+    mainTiles=view?gridTiles(view,.98):[];
+    // Smaller detail tiles make children occupy more of the model's input.
+    // When digitally zoomed in, detail tiling only magnifies existing pixels,
+    // so don't burn inference cycles processing almost identical tiny regions.
+    const alreadySmall = !view || Math.min(view.w,view.h)<300 || digitalZoom>=4;
+    detailTiles=alreadySmall?[]:(view?gridTiles(view,mode==='people'?.52:.68):[]);
+    mainCursor=detailCursor=iteration=0;
+    // Older boxes are no longer shown after mode, orientation or zoom changes.
+    counters[mode].tracks.forEach(t=>t.seenAt=0);
     draw();
   }
-  function resetDetections() {
-    regionResults=tiles.map(()=>[]);
-    currentTile=0;
-    draw();
-  }
-  function intersectionOverUnion(a,b) {
-    const x1=Math.max(a.x,b.x),y1=Math.max(a.y,b.y);
-    const x2=Math.min(a.x+a.w,b.x+b.w),y2=Math.min(a.y+a.h,b.y+b.h);
-    const iw=Math.max(0,x2-x1),ih=Math.max(0,y2-y1),intersection=iw*ih;
-    return intersection/(a.w*a.h+b.w*b.h-intersection+1e-5);
-  }
-  function deduplicate(all) {
-    const boxes=all.sort((a,b)=>b.score-a.score), picked=[];
-    for(const b of boxes) {
-      if(picked.some(p => intersectionOverUnion(p,b)>.28 ||
-         (Math.min(p.w,b.w)*Math.min(p.h,b.h)>0 &&
-          intersectionArea(p,b)/Math.min(p.w*p.h,b.w*b.h)>.72))) continue;
-      picked.push(b);
-    }
-    return picked;
-  }
-  function intersectionArea(a,b) {
-    return Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*
+  function intersectionArea(a,b){
+    return Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)) *
            Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
   }
-  function resizeCanvas() {
-    const ratio=Math.min(window.devicePixelRatio||1,2);
-    const width=Math.round(app.clientWidth*ratio),height=Math.round(app.clientHeight*ratio);
-    if(overlay.width!==width || overlay.height!==height){overlay.width=width;overlay.height=height;}
-    ctx.setTransform(ratio,0,0,ratio,0,0);
-    draw();
+  function iou(a,b){const v=intersectionArea(a,b);return v/(a.w*a.h+b.w*b.h-v+1e-6);}
+  function sameTarget(a,b){
+    const overlap=iou(a,b);
+    if(overlap>.21)return true;
+    const dx=Math.abs(a.x+a.w/2-b.x-b.w/2),dy=Math.abs(a.y+a.h/2-b.y-b.h/2);
+    const areaRatio=Math.min(a.w*a.h,b.w*b.h)/Math.max(1,a.w*a.h,b.w*b.h);
+    // Nearby but distinct people (including children beside adults) stay separate.
+    return areaRatio>.28&&dx<Math.max(4,Math.max(a.w,b.w)*.42)&&dy<Math.max(4,Math.max(a.h,b.h)*.42);
   }
-  function draw() {
+  function dedup(boxes){
+    const result=[];
+    for(const box of [...boxes].sort((a,b)=>b.score-a.score)){
+      if(result.some(old=>iou(old,box)>.38 || (intersectionArea(old,box)/Math.max(1,Math.min(old.w*old.h,box.w*box.h))>.80 && sameTarget(old,box))))continue;
+      result.push(box);
+    }
+    return result;
+  }
+  function trackNew(boxes,now,fine){
+    const memory=counters[mode];
+    // Remember objects briefly for deduplicated cumulative counting, but NEVER
+    // paint detections from old tiles or whole earlier frames on top of video.
+    memory.tracks=memory.tracks.filter(t=>now-t.last<14000).slice(-300);
+    const taken=new Set();
+    for(const b of dedup(boxes)){
+      let best=null,bestScore=-Infinity;
+      for(const t of memory.tracks){
+        if(taken.has(t)||!sameTarget(t,b))continue;
+        const score=iou(t,b)-(now-t.last)*.000012;
+        if(score>bestScore){best=t;bestScore=score;}
+      }
+      if(!best){
+        const t={...b,last:now,seenAt:now,hits:1,counted:false,fine};
+        memory.tracks.push(t);taken.add(t);
+        if(b.score>=.82){t.counted=true;memory.total++;}
+      }else{
+        taken.add(best);
+        // Smooth one bounding box per physical target, preventing ghost trails.
+        const alpha=.60;
+        best.x=best.x*(1-alpha)+b.x*alpha;
+        best.y=best.y*(1-alpha)+b.y*alpha;
+        best.w=best.w*(1-alpha)+b.w*alpha;
+        best.h=best.h*(1-alpha)+b.h*alpha;
+        best.score=Math.max(b.score,best.score*.75);
+        if(now-best.last>85)best.hits++;
+        best.last=best.seenAt=now;
+        best.fine=fine;
+        // Weaker small-person detections require confirmation before counting.
+        if(!best.counted&&(best.hits>=2||b.score>=.82)){
+          best.counted=true;memory.total++;
+        }
+      }
+    }
+    updateCounts();
+  }
+  function currentDetections(){
+    const now=performance.now();
+    const ttlMain=Math.max(680,Math.min(1400,estimatedMs*mainTiles.length*1.25));
+    const ttlDetail=Math.max(820,Math.min(1900,estimatedMs*mainTiles.length*1.6));
+    // Render each live track just once; never combine 6-10 historical tiled
+    // snapshot arrays into piles of slightly shifted red rectangles.
+    return dedup(counters[mode].tracks.filter(t=>now-t.seenAt<(t.fine?ttlDetail:ttlMain)&&t.seenAt>0));
+  }
+  function resizeCanvas(){
+    const ratio=Math.min(2,window.devicePixelRatio||1);
+    const w=Math.round(app.clientWidth*ratio),h=Math.round(app.clientHeight*ratio);
+    if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h;}
+    ctx.setTransform(ratio,0,0,ratio,0,0);draw();
+  }
+  function draw(){
     const W=app.clientWidth,H=app.clientHeight;
     ctx.clearRect(0,0,W,H);
-    if(!running || !view || !tiles.length) return;
-    const boxes=deduplicate(regionResults.flat());
+    if(!running||!view)return;
+    const boxes=currentDetections();
     number.textContent=String(boxes.length);
-    ctx.lineWidth=2.2; ctx.strokeStyle='#ff283b';
-    for(const b of boxes) {
-      const x=(b.x-view.x)*W/view.w,y=(b.y-view.y)*H/view.h;
-      const w=b.w*W/view.w,h=b.h*H/view.h;
-      if(x>=W || y>=H || x+w<=0 || y+h<=0) continue;
-      const dx=Math.max(0,x),dy=Math.max(0,y),dw=Math.min(W,x+w)-dx,dh=Math.min(H,y+h)-dy;
-      if(dw<=0 || dh<=0) continue;
-      ctx.strokeRect(dx,dy,dw,dh);
-      const c=Math.min(15,dw*.25,dh*.25);
-      ctx.lineWidth=3.2;
-      ctx.beginPath();
-      ctx.moveTo(dx,dy+c);ctx.lineTo(dx,dy);ctx.lineTo(dx+c,dy);
-      ctx.moveTo(dx+dw-c,dy);ctx.lineTo(dx+dw,dy);ctx.lineTo(dx+dw,dy+c);
-      ctx.moveTo(dx,dy+dh-c);ctx.lineTo(dx,dy+dh);ctx.lineTo(dx+c,dy+dh);
-      ctx.moveTo(dx+dw-c,dy+dh);ctx.lineTo(dx+dw,dy+dh);ctx.lineTo(dx+dw,dy+dh-c);
-      ctx.stroke();ctx.lineWidth=2.2;
+    ctx.strokeStyle='#ff3047';
+    for(const b of boxes){
+      const x=(b.x-view.x)*W/view.w,y=(b.y-view.y)*H/view.h,w=b.w*W/view.w,h=b.h*H/view.h;
+      if(x>=W||y>=H||x+w<=0||y+h<=0)continue;
+      const left=Math.max(0,x),top=Math.max(0,y),right=Math.min(W,x+w),bottom=Math.min(H,y+h);
+      const bw=right-left,bh=bottom-top;if(bw<1||bh<1)continue;
+      ctx.lineWidth=2;ctx.strokeRect(left,top,bw,bh);
+      const arm=Math.min(15,bw*.3,bh*.3);
+      ctx.lineWidth=3;ctx.beginPath();
+      ctx.moveTo(left,top+arm);ctx.lineTo(left,top);ctx.lineTo(left+arm,top);
+      ctx.moveTo(right-arm,top);ctx.lineTo(right,top);ctx.lineTo(right,top+arm);
+      ctx.moveTo(left,bottom-arm);ctx.lineTo(left,bottom);ctx.lineTo(left+arm,bottom);
+      ctx.moveTo(right-arm,bottom);ctx.lineTo(right,bottom);ctx.lineTo(right,bottom-arm);
+      ctx.stroke();
     }
   }
-
-  async function detectNext(token) {
-    if(!running || token!==generation || !model || busy) return;
-    if(document.visibilityState==='hidden') return;
-    if(video.readyState<2 || !tiles.length) { inferenceTimer=setTimeout(()=>detectNext(token),150);return; }
+  async function detectNext(token){
+    if(!running||token!==generation||!model||document.visibilityState==='hidden')return;
+    // A previous inference may still be finishing after STOP/START. Retry
+    // instead of permanently losing the new detection loop.
+    if(busy){inferenceTimer=setTimeout(()=>detectNext(token),100);return;}
+    if(video.readyState<2||!mainTiles.length){inferenceTimer=setTimeout(()=>detectNext(token),100);return;}
     busy=true;
-    const tileIndex=currentTile++ % tiles.length;
-    const t=tiles[tileIndex];
-    try {
-      frameCtx.drawImage(video, t.x,t.y,t.w,t.h, 0,0,300,300);
-      // Lower cutoff helps small people. May also increase false positives.
-      const minScore=mode==='people'? .24 : .33;
-      const predictions=await model.detect(frame,60,minScore);
-      if(!running || token!==generation) return;
-      const accepted=predictions.filter(p=> CLASS_SETS[mode].has(p.class) && p.score>=minScore);
-      regionResults[tileIndex]=accepted.map(p=>({
-        x:t.x+p.bbox[0]/300*t.w,
-        y:t.y+p.bbox[1]/300*t.h,
-        w:Math.max(0,p.bbox[2]/300*t.w),
-        h:Math.max(0,p.bbox[3]/300*t.h),
-        score:p.score
-      })).filter(p=>p.w>=2 && p.h>=2);
-      draw();
-      state.textContent='LIVE';
-    } catch(e) {
-      console.error('AI detekce:',e);
-      state.textContent='AI CHYBA';
-      toast('Chyba rozpoznávání. Obnov stránku, pokud přetrvává.',4000);
-    } finally {
+    iteration++;
+    // Detail scanning is interleaved with fast scanning. Avoid continuously
+    // inferring dozens of tiles on the slower phone GPU.
+    const interval=mode==='people'?(estimatedMs>550?4:estimatedMs>280?3:2):5;
+    const fine=iteration%interval===0&&detailTiles.length>0;
+    const tiles=fine?detailTiles:mainTiles;
+    const index=fine?(detailCursor++%tiles.length):(mainCursor++%tiles.length);
+    const tile=tiles[index],revision=scanRevision,selectedMode=mode;
+    const started=performance.now();
+    try{
+      frameCtx.drawImage(video,tile.x,tile.y,tile.w,tile.h,0,0,frame.width,frame.height);
+      const minScore=mode==='people'?(fine?.17:.23):(fine?.25:.30);
+      const preds=await model.detect(frame,25,minScore);
+      if(!running||token!==generation||revision!==scanRevision||selectedMode!==mode)return;
+      const accepted=preds.filter(p=>classes[mode].has(p.class)&&p.score>=minScore)
+        .map(p=>({x:tile.x+p.bbox[0]/frame.width*tile.w,
+                  y:tile.y+p.bbox[1]/frame.height*tile.h,
+                  w:Math.max(0,p.bbox[2]/frame.width*tile.w),
+                  h:Math.max(0,p.bbox[3]/frame.height*tile.h),score:p.score}))
+        .filter(b=>b.w>=2&&b.h>=3&&b.x+b.w>view.x&&b.x<view.x+view.w&&b.y+b.h>view.y&&b.y<view.y+view.h);
+      const now=performance.now();
+      trackNew(accepted,now,fine);
+      if(now-lastDraw>75){draw();lastDraw=now;}
+      state.textContent='LIVE';consecutiveErrors=0;
+      estimatedMs=Math.max(60,Math.min(2500,estimatedMs*.80+(now-started)*.20));
+    }catch(e){
+      console.error('AI detekce:',e);consecutiveErrors++;state.textContent='AI CHYBA';
+      if(consecutiveErrors===1||consecutiveErrors%10===0)toast('Chyba rozpoznávání. Pokud přetrvává, obnov stránku.',3500);
+    }finally{
       busy=false;
-      if(running && token===generation && document.visibilityState==='visible') {
-        inferenceTimer=setTimeout(()=>detectNext(token),60);
+      if(running&&token===generation&&document.visibilityState==='visible'){
+        // Pause a little on slow hardware to keep Chrome UI responsive.
+        inferenceTimer=setTimeout(()=>detectNext(token),estimatedMs>700?40:12);
       }
     }
   }
-
-  async function setZoom() {
-    const wanted=Number(zoomInput.value);
-    zoomLabel.textContent=wanted.toLocaleString('cs-CZ',{maximumFractionDigits:1})+'×';
-    if(!running || !track) return;
-    const token=generation;
-    if(nativeZoom) {
-      try {
+  // Logarithmic slider gives fine control at 1-5x and still reaches 100x.
+  function zoomFromSlider(){return Math.pow(100,Number(zoom.value)/1000);}
+  function sliderFromZoom(value){return Math.round(1000*Math.log(Math.max(1,Math.min(100,value)))/Math.log(100));}
+  function formatZoom(value){return (value<10?Math.round(value*10)/10:Math.round(value)).toLocaleString('cs-CZ')+'×';}
+  function updateZoomLabel(value){
+    zoomLabel.textContent=formatZoom(value);
+    zoom.setAttribute('aria-valuetext',formatZoom(value));
+    zoomType.textContent=value>maxNative*1.04?'DIGITÁLNÍ':'';
+  }
+  function updateDigitalView(value){
+    digitalZoom=Math.max(1,value/actualNative);
+    // Slight contrast boost gives better apparent definition; it does not
+    // create details missing from the original sensor image.
+    video.style.transform=`scale(${digitalZoom})`;
+    video.style.filter=digitalZoom>3?'contrast(1.10) saturate(1.03)':'none';
+    clearScan();
+  }
+  async function applyZoom(){
+    const wanted=lastZoomValue,token=generation,serial=++zoomSequence;
+    if(!running||!track)return;
+    if(nativeZoom){
+      try{
         const cap=track.getCapabilities();
         const z=Math.max(cap.zoom.min,Math.min(cap.zoom.max,wanted));
-        await track.applyConstraints({advanced:[{zoom:z}]});
-        if(token!==generation) return;
-        // When hardware zoom maxes out, complete the rest via digital crop.
-        digitalZoom=wanted/z;
-      } catch(e) {nativeZoom=false;digitalZoom=wanted;}
-    } else digitalZoom=wanted;
-    video.style.transform=`scale(${digitalZoom})`;
-    createTiles();
+        const settings={zoom:z};
+        if(focusOption)settings.focusMode=focusOption;
+        await track.applyConstraints({advanced:[settings]});
+        if(token!==generation||serial!==zoomSequence)return;
+        actualNative=Math.max(.1,Number(track.getSettings?.()?.zoom)||z);
+      }catch(e){
+        if(token!==generation||serial!==zoomSequence)return;
+        nativeZoom=false;actualNative=1;maxNative=1;
+      }
+    }
+    if(token!==generation||serial!==zoomSequence)return;
+    updateZoomLabel(wanted);
+    updateDigitalView(wanted);
   }
-  zoomInput.addEventListener('input',()=>{
-    zoomLabel.textContent=Number(zoomInput.value).toLocaleString('cs-CZ',{maximumFractionDigits:1})+'×';
-    if(!running) return;
-    clearTimeout(zoomTimer);
-    zoomTimer=setTimeout(setZoom,180);
-  });
-
-  function stop() {
-    running=false; generation++;
-    clearTimeout(inferenceTimer); clearTimeout(zoomTimer);
-    if(stream) { stream.getTracks().forEach(t=>t.stop()); stream=null; }
-    video.pause(); video.srcObject=null;
-    track=null; nativeZoom=false; digitalZoom=1; video.style.transform='scale(1)';
-    releaseWake(); tiles=[];regionResults=[];view=null;
+  function chooseZoom(value){
+    value=Math.max(1,Math.min(100,value));
+    lastZoomValue=value;
+    zoom.value=String(sliderFromZoom(value));
+    updateZoomLabel(value);
+    // Fast visual feedback even while camera's native zoom is changing.
+    if(running){
+      updateDigitalView(value);
+      clearTimeout(zoomTimer);
+      zoomTimer=setTimeout(applyZoom,165);
+    }
+  }
+  zoom.addEventListener('input',()=>chooseZoom(zoomFromSlider()));
+  document.querySelectorAll('[data-zoom]').forEach(button=>button.addEventListener('click',()=>chooseZoom(Number(button.dataset.zoom))));
+  // Two-finger gesture works on the live preview as well as the slider.
+  let pinchDistance=0,pinchBase=1;
+  function touchDistance(touches){return Math.hypot(touches[0].clientX-touches[1].clientX,touches[0].clientY-touches[1].clientY);}
+  document.querySelector('.scene').addEventListener('touchstart',e=>{
+    if(e.touches.length===2){pinchDistance=touchDistance(e.touches);pinchBase=lastZoomValue;e.preventDefault();}
+  },{passive:false});
+  document.querySelector('.scene').addEventListener('touchmove',e=>{
+    if(e.touches.length===2&&pinchDistance>10){chooseZoom(pinchBase*touchDistance(e.touches)/pinchDistance);e.preventDefault();}
+  },{passive:false});
+  document.querySelector('.scene').addEventListener('touchend',e=>{if(e.touches.length<2)pinchDistance=0;},{passive:true});
+  function stop(){
+    running=false;generation++;zoomSequence++;
+    clearTimeout(inferenceTimer);clearTimeout(zoomTimer);
+    if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+    video.pause();video.srcObject=null;
+    track=null;nativeZoom=false;digitalZoom=1;actualNative=maxNative=1;focusOption=null;
+    video.style.transform='scale(1)';video.style.filter='none';
+    unlockScreen();view=null;mainTiles=[];detailTiles=[];
     ctx.clearRect(0,0,app.clientWidth,app.clientHeight);
-    app.classList.remove('is-running');
-    startButton.disabled=false; startButton.textContent='START';
-    state.textContent='AI KAMERA'; number.textContent='0';
-    zoomInput.value=1;zoomLabel.textContent='1×';
+    app.classList.remove('is-running');startButton.disabled=false;startButton.textContent='START';
+    state.textContent='LIVE';number.textContent='0';zoom.value=0;lastZoomValue=1;updateZoomLabel(1);
   }
-
-  async function start() {
-    if(running) return;
-    const token=++generation;
-    running=true;
-    startButton.disabled=true;
-    app.classList.add('is-running');
-    state.textContent='START';
-    number.textContent='0';
-    resizeCanvas();
-    try {
-      // Camera permission prompt is requested directly from the Start gesture.
+  async function start(){
+    if(running)return;
+    for(const m of Object.values(counters)){m.total=0;m.tracks=[];}
+    updateCounts();
+    const token=++generation;running=true;startButton.disabled=true;
+    app.classList.add('is-running');state.textContent='KAMERA';number.textContent='0';resizeCanvas();
+    try{
+      // Camera is requested from the button gesture before model download.
       const cameraReady=openCamera(token);
-      // Capture errors now so an early model-loading failure does not become
-      // an unhandled rejection while the camera permission dialog is open.
       const modelReady=loadModel().then(value=>({value}),error=>({error}));
-      await cameraReady;
-      if(!running || token!==generation) return;
-      createTiles();resizeCanvas();
-      await wakeUp();
-      state.textContent='NAČÍTÁNÍ AI';
-      toast('Načítám rozpoznávání…',0);
-      const loaded=await modelReady;
-      if(!running || token!==generation) return;
-      if(loaded.error) throw loaded.error;
-      toast(''); state.textContent='LIVE';
-      detectNext(token);
-    } catch(err) {
-      if(token!==generation) return;
-      console.error(err);
-      stop();
-      let explanation=err && err.message ? err.message : 'Nepodařilo se spustit kameru.';
-      if(['NotAllowedError','PermissionDeniedError','SecurityError'].includes(err.name)) explanation='Povol přístup ke kameře v nastavení prohlížeče.';
-      if(['NotFoundError','DevicesNotFoundError'].includes(err.name)) explanation='Kamera není dostupná.';
-      if(['NotReadableError','TrackStartError'].includes(err.name)) explanation='Kameru právě používá jiná aplikace.';
-      toast(explanation,7500);
+      await cameraReady;if(!running||token!==generation)return;
+      clearScan();resizeCanvas();updateZoomLabel(lastZoomValue);await lockScreen();
+      state.textContent='NAČÍTÁNÍ';toast('Načítám AI rozpoznávání…',0);
+      const result=await modelReady;if(!running||token!==generation)return;
+      if(result.error)throw result.error;
+      toast('');state.textContent='LIVE';detectNext(token);
+    }catch(e){
+      if(token!==generation)return;
+      console.error('Spuštění kamery:',e);stop();
+      let error=e?.message||'Kameru se nepodařilo spustit.';
+      if(['NotAllowedError','PermissionDeniedError','SecurityError'].includes(e?.name))error='Povol přístup ke kameře v nastavení prohlížeče.';
+      if(['NotFoundError','DevicesNotFoundError'].includes(e?.name))error='Kamera není dostupná.';
+      if(['NotReadableError','TrackStartError'].includes(e?.name))error='Kameru právě používá jiná aplikace.';
+      toast(error,7000);
     }
   }
-  startButton.addEventListener('click',start);
-  $('stop').addEventListener('click',stop);
+  $('start').addEventListener('click',start);$('stop').addEventListener('click',stop);
   document.addEventListener('visibilitychange',async()=>{
-    if(!running) return;
-    if(document.visibilityState==='visible') {
-      await wakeUp();
-      if(!busy && model) {clearTimeout(inferenceTimer);detectNext(generation);}
-    } else {
-      clearTimeout(inferenceTimer);
-      state.textContent='POZASTAVENO';
-    }
+    if(!running)return;
+    if(document.visibilityState==='visible'){
+      await lockScreen();
+      if(!busy&&model){clearTimeout(inferenceTimer);detectNext(generation);}
+    }else{clearTimeout(inferenceTimer);state.textContent='PAUZA';}
   });
-  window.addEventListener('resize',()=>{resizeCanvas(); if(running)createTiles();});
+  let lastSize='';
+  function changedSize(){
+    const size=`${app.clientWidth}x${app.clientHeight}:${video.videoWidth}x${video.videoHeight}`;
+    if(size!==lastSize){lastSize=size;resizeCanvas();if(running)clearScan();}
+  }
+  window.addEventListener('resize',changedSize);
+  video.addEventListener('resize',changedSize);
+  window.addEventListener('orientationchange',()=>setTimeout(changedSize,180));
   window.addEventListener('pagehide',stop);
+  updateZoomLabel(1);
   resizeCanvas();
 })();
 </script>
